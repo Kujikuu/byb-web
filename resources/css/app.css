@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --color-brand-primary: #0057ff;
+    --color-brand-primary-dark: #003fcc;
+    --color-brand-primary-soft: #e5eeff;
+    --color-brand-navy: #020617;
+    --color-brand-bg: #f5f7fb;
+    --color-brand-surface: #ffffff;
+    --color-brand-border: #e2e8f0;
+    --color-brand-muted: #64748b;
+    --color-brand-accent: #f97316;
+
+    --radius-card: 1.75rem;
+    --radius-button: 9999px;
+
+    --shadow-card: 0 18px 45px rgba(15, 23, 42, 0.08);
+    --shadow-elevated: 0 24px 60px rgba(15, 23, 42, 0.12);
+}
+
+@layer base {
+    body {
+        @apply bg-brand-bg text-slate-900 font-sans antialiased;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-semibold text-slate-900;
+    }
+
+    a {
+        @apply text-brand-primary transition-colors duration-150;
+    }
+
+    a:hover {
+        @apply text-brand-primary-dark;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center justify-center rounded-button bg-brand-primary px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-white transition-all duration-150 hover:bg-brand-primary-dark hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg;
+    }
+
+    .btn-outline {
+        @apply inline-flex items-center justify-center rounded-button border border-brand-primary bg-white px-5 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-brand-primary transition-all duration-150 hover:bg-brand-primary-soft hover:text-brand-primary-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-brand-bg;
+    }
+
+    .card-surface {
+        @apply rounded-card bg-brand-surface shadow-card ring-1 ring-brand-border/80;
+    }
+
+    .tag-pill {
+        @apply inline-flex items-center rounded-button bg-brand-primary-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-brand-primary;
+    }
+}
+
