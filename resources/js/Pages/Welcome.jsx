@@ -26,7 +26,7 @@ export default function Welcome() {
                 <div className="flex w-full h-full">
                     {/* Left Section - 1/2 width */}
                     <div
-                        className="w-full lg:w-1/2 bg-[#f6f4ef] relative flex items-center px-4 py-0 sm:py-10 sm:px-6 lg:px-12 xl:px-16"
+                        className="w-full lg:w-1/2 bg-[#f6f4ef] relative flex items-center px-4 py-0 sm:py-20 sm:px-6 lg:px-12 xl:px-16"
                         style={{
                             backgroundImage: `url('${BACKGROUND_IMG}')`,
                             backgroundSize: 'auto',
