@@ -23,7 +23,7 @@ export default function PublicLayout({ children }) {
         <div className="min-h-screen bg-white font-sans text-slate-900">
             {/* Navigation */}
             {/* Navigation */}
-            <nav className="border-b border-gray-100 bg-white/95 backdrop-blur-sm top-0 z-50 shadow-sm">
+            <nav className="top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-20">
                         <div className="flex items-center gap-8">
@@ -47,7 +47,7 @@ export default function PublicLayout({ children }) {
                                 target="_blank"
                                 className="hidden xl:flex items-center gap-3 hover:opacity-80 transition-opacity"
                             >
-                                <div className="p-2 bg-blue-50 rounded-full">
+                                <div className="p-2 bg-white rounded-full">
                                     <WhatsappLogo size={20} weight="fill" className="text-green-600" />
                                 </div>
                                 <div className="flex flex-col">

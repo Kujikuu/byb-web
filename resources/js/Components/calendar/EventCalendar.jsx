@@ -325,7 +325,7 @@ export default function EventCalendar({
                             {/* Content block */}
                             <div className="flex min-w-0 flex-1 flex-col justify-center">
                                 <div className="flex flex-wrap items-center justify-between gap-2">
-                                    <h3 className="text-sm font-bold uppercase tracking-tight text-slate-900 sm:text-base">
+                                    <h3 className="text-base font-bold text-slate-900 sm:text-lg">
                                         {event.title}
                                     </h3>
                                     {event.type && (

@@ -1,21 +1,21 @@
 import { Head } from '@inertiajs/react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Check } from 'phosphor-react';
+import PageHeader from '@/Components/PageHeader';
 
 export default function About() {
     return (
         <PublicLayout>
             <Head title="About Us - Build Your Booth" />
 
+            <PageHeader
+                title="About Build Your Booth"
+                subtitle="Our Story"
+                description="Our mission is to bridge the gap between exhibitors and their success by providing a centralized, easy-to-use platform for booth discovery and management."
+            />
+
             <div className="py-20 lg:py-32 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-3xl space-y-6 mb-16 lg:mb-20 text-center mx-auto">
-                        <h4 className="text-xs font-black text-blue-600 uppercase tracking-[0.3em]">Our Story</h4>
-                        <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 tracking-tighter">About Build Your Booth</h1>
-                        <p className="text-slate-500 font-medium text-sm leading-relaxed px-4">
-                            Our mission is to bridge the gap between exhibitors and their success by providing a centralized, easy-to-use platform for booth discovery and management.
-                        </p>
-                    </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                         <div className="prose prose-slate max-w-none">

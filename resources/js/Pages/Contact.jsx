@@ -1,22 +1,18 @@
 import { Head } from '@inertiajs/react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { MapPin, Phone, EnvelopeSimple, ChatCircleText } from 'phosphor-react';
+import PageHeader from '@/Components/PageHeader';
 
 export default function Contact() {
     return (
         <PublicLayout>
             <Head title="Contact Us - Build Your Booth" />
 
-            {/* Hero Section */}
-            <div className="py-20 lg:py-24 bg-slate-50 border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-[0.3em] mb-4">Get In Touch</h4>
-                    <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 tracking-tighter mb-6">Contact Us</h1>
-                    <p className="text-slate-500 font-medium text-lg max-w-2xl mx-auto leading-relaxed">
-                        Have a question or ready to build your next booth? We're here to help you stand out at your next exhibition.
-                    </p>
-                </div>
-            </div>
+            <PageHeader
+                title="Contact Us"
+                subtitle="Get In Touch"
+                description="Have a question or ready to build your next booth? We're here to help you stand out at your next exhibition."
+            />
 
             <div className="py-20 lg:py-24 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
