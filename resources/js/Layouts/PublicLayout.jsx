@@ -26,7 +26,7 @@ export default function PublicLayout({ children }) {
             {/* Navigation */}
             <nav className="relative top-0 z-50 bg-[#f6f4ef]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-20">
+                    <div className="flex justify-between h-24">
                         <div className="flex items-center gap-8">
                             <Link href="/" className="flex items-center">
                                 <ApplicationLogo className="h-10 lg:h-14 w-auto" />

@@ -21,7 +21,7 @@ export default function VideoModal({ isOpen, onClose, videoUrl, videoType = 'you
             const regExp = /(?:vimeo\.com\/|player\.vimeo\.com\/video\/)(\d+)/;
             const match = videoUrl.match(regExp);
             const videoId = match ? match[1] : null;
-            return videoId ? `https://player.vimeo.com/video/${videoId}?autoplay=1` : videoUrl;
+            return videoId ? `https://player.vimeo.com/video/${videoId}?autoplay=1&controls=0&muted=0` : videoUrl;
         } else {
             // Direct video URL
             return videoUrl;

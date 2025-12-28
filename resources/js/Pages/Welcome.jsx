@@ -11,11 +11,12 @@ import { motion } from 'framer-motion';
 const BOOTH_SHOWCASE_IMG = '/images/booth_showcase.png';
 const CONSULTATION_BG_IMG = '/images/consultation_bg.png';
 const BACKGROUND_IMG = '/images/background.png';
+const SHOWREEL_IMG = '/images/Showreel_1920x108002.jpg';
 
 export default function Welcome() {
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
-    // TODO: Replace with actual video URL
-    const videoUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'; // Placeholder
+    // TODO: Replace with actual Vimeo video URL
+    const videoUrl = 'https://vimeo.com/1089796539?autoplay=1&controls=0&muted=0'; // Placeholder - replace with your Vimeo video URL
     return (
         <PublicLayout>
             <Head title="Build Your Booth - Exceptional Booth Building Experience" />
@@ -33,49 +34,13 @@ export default function Welcome() {
                             backgroundRepeat: 'no-repeat',
                         }}
                     >
-                        {/* Large White Plus Sign - Upper Middle */}
-                        <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 opacity-20 pointer-events-none">
-                            <div className="text-9xl font-thin text-white select-none">+</div>
-                        </div>
-
-                        {/* Thin Curved White Lines */}
-                        <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
-                            <svg className="absolute top-20 right-20 w-64 h-64" viewBox="0 0 200 200">
-                                <path d="M 20 100 Q 50 50, 100 80 T 180 100" stroke="white" strokeWidth="2" fill="none" />
-                            </svg>
-                            <svg className="absolute bottom-20 left-20 w-64 h-64" viewBox="0 0 200 200">
-                                <path d="M 20 100 Q 50 150, 100 120 T 180 100" stroke="white" strokeWidth="2" fill="none" />
-                            </svg>
-                        </div>
-
-                        {/* Chevrons - Below Content, Pointing Right */}
-                        <div className="absolute bottom-24 left-10 opacity-20 pointer-events-none">
-                            <div className="flex gap-3">
-                                {[...Array(8)].map((_, i) => (
-                                    <div key={i} className="text-slate-400 text-2xl font-thin">&gt;</div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Dots Pattern - Bottom Right */}
-                        <div className="absolute bottom-10 right-20 opacity-15 pointer-events-none">
-                            <div className="grid grid-cols-6 gap-2">
-                                {[...Array(24)].map((_, i) => (
-                                    <div
-                                        key={i}
-                                        className={`w-1.5 h-1.5 rounded-full ${i % 4 === 0 ? 'bg-red-500' : 'bg-white'}`}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-
                         <div className="relative z-10 max-w-2xl space-y-8">
                             <div className="space-y-4">
                                 <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
                                     <span className="w-8 h-[2px] bg-blue-600" />
                                     Exceptional booth-building experience
                                 </h4>
-                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold uppercase text-slate-900 leading-[1.05] tracking-tighter">
+                                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-slate-900 leading-[1.05] tracking-tighter">
                                     Build your next <br className="hidden sm:block" />
                                     <span className="text-blue-600">Booth</span>
                                 </h1>
@@ -107,7 +72,18 @@ export default function Welcome() {
                     </div>
 
                     {/* Right Section - 1/2 width */}
-                    <div className="hidden lg:flex w-1/2 bg-slate-900 relative items-center justify-center h-[640px]">
+                    <div 
+                        className="hidden lg:flex w-1/2 relative items-center justify-center"
+                        style={{
+                            backgroundImage: `url('${SHOWREEL_IMG}')`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
+                        }}
+                    >
+                        {/* Overlay for better contrast */}
+                        <div className="absolute inset-0 bg-slate-900/40"></div>
+                        
                         {/* Branded Logo/Cube Behind Play Button */}
                         <div className="absolute inset-0 flex items-center justify-center opacity-20">
                             <div className="text-center">
@@ -140,7 +116,7 @@ export default function Welcome() {
                     isOpen={isVideoModalOpen}
                     onClose={() => setIsVideoModalOpen(false)}
                     videoUrl={videoUrl}
-                    videoType="youtube"
+                    videoType="vimeo"
                 />
             </AnimatedSection>
 
