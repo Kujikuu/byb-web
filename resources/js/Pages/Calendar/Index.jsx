@@ -3,6 +3,9 @@ import { Head } from '@inertiajs/react';
 import EventCalendar from '@/Components/calendar/EventCalendar';
 import PageHeader from '@/Components/PageHeader';
 import AnimatedSection from '@/Components/AnimatedSection';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/Contexts/LanguageContext';
+import { useEffect } from 'react';
 
 export default function Index({
     initialMonth,
@@ -10,15 +13,27 @@ export default function Index({
     events,
     filters,
     ui,
+    locale,
 }) {
+    const { t } = useTranslation();
+    const { setLanguage } = useLanguage();
+
+    // Sync locale from server with LanguageContext
+    useEffect(() => {
+        if (locale && ['en', 'ar'].includes(locale)) {
+            setLanguage(locale);
+            localStorage.setItem('app_language', locale);
+        }
+    }, [locale, setLanguage]);
+    
     return (
         <PublicLayout>
-            <Head title="Events Calendar" />
+            <Head title={t('calendar.title')} />
 
             <PageHeader
-                title="Exhibitions Calendar"
-                subtitle="Stay Informed"
-                description="Discover and explore upcoming events across Saudi Arabia and Egypt. Filter by industry, country, or keyword to find what matters to you."
+                title={t('calendar.pageTitle')}
+                subtitle={t('calendar.subtitle')}
+                description={t('calendar.description')}
             />
 
             <AnimatedSection className="py-20 bg-slate-50">

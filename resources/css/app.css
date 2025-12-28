@@ -63,3 +63,29 @@
     }
 }
 
+/* Remove default select arrow and use custom */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* LTR Select Dropdown Arrow - down arrow positioned on the right */
+[dir="ltr"] select {
+    background-position: right 0.75rem center;
+    padding-right: 2.5rem;
+    padding-left: 0.75rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-size: 1.25em 1.25em;
+}
+
+/* RTL Select Dropdown Arrow - down arrow positioned on the left */
+[dir="rtl"] select {
+    background-position: left 0.75rem center;
+    padding-left: 2.5rem;
+    padding-right: 0.75rem;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-size: 1.25em 1.25em;
+}

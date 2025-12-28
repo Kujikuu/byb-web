@@ -1,7 +1,12 @@
 import { Link } from '@inertiajs/react';
-import { CaretRight } from 'phosphor-react';
+import { CaretRight, CaretLeft } from 'phosphor-react';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/Contexts/LanguageContext';
 
 export default function PageHeader({ title, subtitle, description, breadcrumbs }) {
+    const { t } = useTranslation();
+    const { isRTL } = useLanguage();
+    
     // Generate breadcrumbs dynamically if not provided
     const generateBreadcrumbs = () => {
         if (breadcrumbs) {
@@ -9,7 +14,7 @@ export default function PageHeader({ title, subtitle, description, breadcrumbs }
         }
 
         const crumbs = [
-            { label: 'Home', href: '/' },
+            { label: t('common.home'), href: '/' },
         ];
 
         // Get current route name
@@ -17,15 +22,15 @@ export default function PageHeader({ title, subtitle, description, breadcrumbs }
 
         // Map route names to breadcrumb labels
         const routeLabels = {
-            'calendar.index': 'Exhibitions Calendar',
-            'about': 'About',
-            'contact': 'Contact',
-            'services': 'Services',
-            'welcome': 'Home',
+            'calendar.index': t('common.exhibitionsCalendar'),
+            'about': t('common.about'),
+            'contact': t('common.contact'),
+            'services': t('common.services'),
+            'welcome': t('common.home'),
         };
 
         if (currentRoute && currentRoute !== 'welcome') {
-            const label = routeLabels[currentRoute] || title || 'Page';
+            const label = routeLabels[currentRoute] || title || t('common.home');
             crumbs.push({ label, href: null });
         }
 
@@ -47,7 +52,11 @@ export default function PageHeader({ title, subtitle, description, breadcrumbs }
                                 {breadcrumbItems.map((crumb, index) => (
                                     <li key={index} className="flex items-center">
                                         {index > 0 && (
-                                            <CaretRight size={16} className='mr-2' />
+                                            isRTL ? (
+                                                <CaretLeft size={16} className='me-2' />
+                                            ) : (
+                                                <CaretRight size={16} className='me-2' />
+                                            )
                                         )}
                                         {crumb.href ? (
                                             <Link

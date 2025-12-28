@@ -1,12 +1,14 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
 import PublicLayout from '@/Layouts/PublicLayout';
-import { CaretRight, PaintBrush, Wrench, ChartBar, Play } from 'phosphor-react';
+import { CaretRight, CaretLeft, PaintBrush, Wrench, ChartBar, Play } from 'phosphor-react';
 import CTABanner from '@/Components/CTABanner';
 import VideoModal from '@/Components/VideoModal';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import AnimatedSection, { AnimatedItem } from '@/Components/AnimatedSection';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/Contexts/LanguageContext';
 
 const BOOTH_SHOWCASE_IMG = '/images/booth_showcase.png';
 const CONSULTATION_BG_IMG = '/images/consultation_bg.png';
@@ -14,12 +16,14 @@ const BACKGROUND_IMG = '/images/background.png';
 const SHOWREEL_IMG = '/images/Showreel_1920x108002.jpg';
 
 export default function Welcome() {
+    const { t } = useTranslation();
+    const { isRTL } = useLanguage();
     const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
     // TODO: Replace with actual Vimeo video URL
     const videoUrl = 'https://vimeo.com/1089796539?autoplay=1&controls=0&muted=0'; // Placeholder - replace with your Vimeo video URL
     return (
         <PublicLayout>
-            <Head title="Build Your Booth - Exceptional Booth Building Experience" />
+            <Head title={t('welcome.title')} />
 
             {/* Hero Section */}
             <AnimatedSection className="relative flex items-center overflow-hidden mt-0 lg:-mt-20 pt-0 lg:pt-20 z-0">
@@ -38,14 +42,14 @@ export default function Welcome() {
                             <div className="space-y-4">
                                 <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
                                     <span className="w-8 h-[2px] bg-blue-600" />
-                                    Exceptional booth-building experience
+                                    {t('welcome.heroSubtitle')}
                                 </h4>
                                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold uppercase text-slate-900 leading-[1.05] tracking-tighter">
-                                    Build your next <br className="hidden sm:block" />
-                                    <span className="text-blue-600">Booth</span>
+                                    {t('welcome.heroTitle').split(' ').slice(0, -1).join(' ')} <br className="hidden sm:block" />
+                                    <span className="text-blue-600">{t('welcome.heroTitle').split(' ').slice(-1)[0]}</span>
                                 </h1>
                                 <p className="text-slate-500 text-lg leading-relaxed max-w-lg font-normal">
-                                    Elevate your booth-building experience with our digital platform and stay updated on upcoming exhibitions through our exhibition calendar.
+                                    {t('welcome.heroDescription')}
                                 </p>
                             </div>
                             <div className="flex flex-wrap gap-5 items-center">
@@ -54,18 +58,22 @@ export default function Welcome() {
                                     whileTap={{ scale: 0.98 }}
                                     className="bg-blue-600 text-white font-black px-10 py-5 rounded-md text-sm uppercase tracking-wide"
                                 >
-                                    BUILD YOUR BOOTH
+                                    {t('common.buildYourBooth')}
                                 </motion.button>
                                 <motion.div whileHover={{ color: '#2563eb' }}>
                                     <Link href="/calendar" className="text-slate-900 font-black text-sm uppercase tracking-wide flex items-center gap-2">
-                                        BROWSE CALENDAR
-                                        <CaretRight size={16} weight="bold" />
+                                        {t('common.browseCalendar')}
+                                        {isRTL ? (
+                                            <CaretLeft size={16} weight="bold" />
+                                        ) : (
+                                            <CaretRight size={16} weight="bold" />
+                                        )}
                                     </Link>
                                 </motion.div>
                             </div>
                             <div className="pt-4">
                                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                                    Stay updated on the exhibition calendar for Saudi Arabia and Egypt.
+                                    {t('welcome.heroFooter')}
                                 </p>
                             </div>
                         </div>
@@ -91,7 +99,7 @@ export default function Welcome() {
                                     <ApplicationLogo className="h-16 w-auto mx-auto opacity-30" />
                                 </div>
                                 <div className="text-white/20 text-xs font-bold uppercase tracking-widest">
-                                    BUILD YOUR BOOTH
+                                    {t('common.buildYourBooth')}
                                 </div>
                             </div>
                         </div>
@@ -125,11 +133,11 @@ export default function Welcome() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <AnimatedItem className="flex flex-col lg:flex-row justify-between items-end gap-8 mb-20">
                         <div className="space-y-4 max-w-2xl">
-                            <h4 className="text-xs font-black text-blue-600 uppercase tracking-[0.3em]">Our Services</h4>
-                            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tighter">Innovative Booth Solutions</h2>
+                            <h4 className="text-xs font-black text-blue-600 uppercase tracking-[0.3em]">{t('welcome.servicesTitle')}</h4>
+                            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tighter">{t('welcome.servicesSubtitle')}</h2>
                         </div>
                         <p className="text-slate-500 font-medium max-w-md text-sm leading-relaxed pb-2">
-                            Designing an exceptional booth can be challenging, but we're here to help. Check out our solutions for building and designing your booth, complete with performance reports to measure its success.
+                            {t('welcome.servicesDescription')}
                         </p>
                     </AnimatedItem>
 
@@ -137,23 +145,23 @@ export default function Welcome() {
                         <AnimatedItem>
                             <ServiceCard
                                 icon={PaintBrush}
-                                title="Booth Design"
-                                description="Our team handles everything from planning to setup, ensuring your booth attracts attention and engages your audience."
+                                title={t('welcome.boothDesign')}
+                                description={t('welcome.boothDesignDesc')}
                             />
                         </AnimatedItem>
                         <AnimatedItem>
                             <ServiceCard
                                 icon={Wrench}
-                                title="Booth Build"
-                                description="We focus on your goals to build an attractive and effective display. With quality materials and additional features, we ensure your booth stands out."
+                                title={t('welcome.boothBuild')}
+                                description={t('welcome.boothBuildDesc')}
                                 highlighted
                             />
                         </AnimatedItem>
                         <AnimatedItem>
                             <ServiceCard
                                 icon={ChartBar}
-                                title="Performance Report"
-                                description="We analyze visitor numbers and engagement to help you improve future exhibitions. Boost your impact with our detailed report!"
+                                title={t('welcome.performanceReport')}
+                                description={t('welcome.performanceReportDesc')}
                             />
                         </AnimatedItem>
                     </div>
@@ -162,9 +170,9 @@ export default function Welcome() {
 
             {/* Consultation Banner */}
             <CTABanner
-                title="Get a Free Consultation!"
-                description="Get your booth ready for your next event! Contact us now for a FREE consultation!"
-                buttonText="REQUEST CONSULTATION"
+                title={t('welcome.consultationTitle')}
+                description={t('welcome.consultationDescription')}
+                buttonText={t('welcome.consultationButton')}
                 backgroundImage={CONSULTATION_BG_IMG}
             />
 
@@ -172,10 +180,10 @@ export default function Welcome() {
             <AnimatedSection className="py-20 lg:py-32 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
                     <AnimatedItem className="max-w-3xl mx-auto space-y-6 mb-16 lg:mb-24">
-                        <h4 className="text-xs font-black text-blue-600 uppercase tracking-[0.3em]">How It Works</h4>
-                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tighter">Our Working Process</h2>
+                        <h4 className="text-xs font-black text-blue-600 uppercase tracking-[0.3em]">{t('welcome.howItWorks')}</h4>
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tighter">{t('welcome.workingProcess')}</h2>
                         <p className="text-slate-500 font-medium text-sm leading-relaxed px-4 sm:px-10">
-                            From initial consultation to final delivery, we guide you through every step of creating an exceptional exhibition booth that stands out and engages your audience.
+                            {t('welcome.workingProcessDesc')}
                         </p>
                     </AnimatedItem>
 
@@ -186,22 +194,22 @@ export default function Welcome() {
                         <AnimatedItem>
                             <ProcessStep
                                 number="01"
-                                title="Request Your Booth"
-                                description="Submit your booth request with your exhibition details, location, and requirements. Tell us about your brand, target audience, and what you want to achieve at the event."
+                                title={t('welcome.step1Title')}
+                                description={t('welcome.step1Desc')}
                             />
                         </AnimatedItem>
                         <AnimatedItem>
                             <ProcessStep
                                 number="02"
-                                title="Design & Planning"
-                                description="Our expert designers create a custom booth design tailored to your brand. We handle everything from concept to detailed planning, ensuring your booth attracts attention."
+                                title={t('welcome.step2Title')}
+                                description={t('welcome.step2Desc')}
                             />
                         </AnimatedItem>
                         <AnimatedItem>
                             <ProcessStep
                                 number="03"
-                                title="Build & Delivery"
-                                description="We build your booth using premium materials and cutting-edge technology. With our fast-track service, your booth is ready and delivered within 3 days of approval."
+                                title={t('welcome.step3Title')}
+                                description={t('welcome.step3Desc')}
                             />
                         </AnimatedItem>
                     </div>

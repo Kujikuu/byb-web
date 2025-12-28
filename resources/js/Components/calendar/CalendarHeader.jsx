@@ -1,6 +1,8 @@
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import { CaretLeft, CaretRight, CalendarBlank } from 'phosphor-react';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/Contexts/LanguageContext';
 
 const monthLabels = [
     'JANUARY',
@@ -22,6 +24,8 @@ export default function CalendarHeader({
     currentYear,
     showJumpMonths = true,
 }) {
+    const { t } = useTranslation();
+    const { language, isRTL } = useLanguage();
     const [showJump, setShowJump] = useState(false);
     const goToMonth = (month, year) => {
         const searchParams = new URLSearchParams(
@@ -32,8 +36,11 @@ export default function CalendarHeader({
         searchParams.set('year', String(year));
 
         const data = Object.fromEntries(searchParams.entries());
+        // Ensure locale is included from localStorage
+        const locale = localStorage.getItem('app_language') || 'en';
+        const dataWithLocale = { ...data, locale };
 
-        router.get(route('calendar.index'), data, {
+        router.get(route('calendar.index'), dataWithLocale, {
             preserveState: true,
             preserveScroll: true,
         });
@@ -65,7 +72,7 @@ export default function CalendarHeader({
     };
 
     const monthName = new Date(currentYear, currentMonth - 1, 1).toLocaleString(
-        undefined,
+        language === 'ar' ? 'ar-SA' : 'en-US',
         { month: 'long' },
     );
 
@@ -82,7 +89,7 @@ export default function CalendarHeader({
                         {monthName.toUpperCase()}, {currentYear}
                     </div>
                     <div className="text-xs font-medium uppercase tracking-[0.16em] text-brand-muted">
-                        Events calendar
+                        {t('common.eventsCalendar')}
                     </div>
                 </div>
 
@@ -93,27 +100,35 @@ export default function CalendarHeader({
                         className="btn-outline hidden gap-1 sm:inline-flex"
                     >
                         <CalendarBlank className="h-3.5 w-3.5" weight="duotone" />
-                        <span>Current Month</span>
+                        <span>{t('common.currentMonth')}</span>
                     </button>
 
                     {/* Month navigation pill */}
                     <div className="inline-flex items-center rounded-full border border-brand-border bg-brand-surface p-0.5">
                         <button
                             type="button"
-                            onClick={handlePrev}
+                            onClick={isRTL ? handleNext : handlePrev}
                             className="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-600 hover:bg-brand-primary-soft"
-                            aria-label="Previous month"
+                            aria-label={t('common.previousMonth')}
                         >
-                            <CaretLeft className="h-4 w-4" weight="bold" />
+                            {isRTL ? (
+                                <CaretRight className="h-4 w-4" weight="bold" />
+                            ) : (
+                                <CaretLeft className="h-4 w-4" weight="bold" />
+                            )}
                         </button>
                         <div className="h-5 w-px bg-brand-border/80" />
                         <button
                             type="button"
-                            onClick={handleNext}
+                            onClick={isRTL ? handlePrev : handleNext}
                             className="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-600 hover:bg-brand-primary-soft"
-                            aria-label="Next month"
+                            aria-label={t('common.nextMonth')}
                         >
-                            <CaretRight className="h-4 w-4" weight="bold" />
+                            {isRTL ? (
+                                <CaretLeft className="h-4 w-4" weight="bold" />
+                            ) : (
+                                <CaretRight className="h-4 w-4" weight="bold" />
+                            )}
                         </button>
                     </div>
 
@@ -123,7 +138,7 @@ export default function CalendarHeader({
                         className="btn-primary inline-flex gap-1 sm:hidden"
                     >
                         <CalendarBlank className="h-3.5 w-3.5" weight="bold" />
-                        <span>Today</span>
+                        <span>{t('common.today')}</span>
                     </button>
                 </div>
             </div>
@@ -137,12 +152,12 @@ export default function CalendarHeader({
                         className="inline-flex items-center rounded-full bg-brand-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white hover:bg-brand-primary-dark"
                         aria-expanded={showJump}
                     >
-                        <span className="mr-1">Jump Months</span>
+                        <span className="me-1">{t('common.jumpMonths')}</span>
                         <span
-                            className={`transition-transform ${showJump ? 'rotate-90' : ''
+                            className={`transition-transform ${showJump ? (isRTL ? '-rotate-90' : 'rotate-90') : ''
                                 }`}
                         >
-                            ›
+                            {isRTL ? '‹' : '›'}
                         </span>
                     </button>
 
@@ -152,6 +167,8 @@ export default function CalendarHeader({
                                 {monthLabels.map((label, index) => {
                                     const month = index + 1;
                                     const isActive = month === currentMonth;
+                                    const monthKeys = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+                                    const translatedLabel = t(`calendar.months.${monthKeys[index]}`);
 
                                     return (
                                         <button
@@ -165,7 +182,7 @@ export default function CalendarHeader({
                                                 : 'bg-brand-primary-soft text-brand-primary hover:bg-brand-primary/10'
                                                 }`}
                                         >
-                                            {label}
+                                            {translatedLabel}
                                         </button>
                                     );
                                 })}

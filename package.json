@@ -24,6 +24,8 @@
     },
     "dependencies": {
         "framer-motion": "^12.23.26",
-        "phosphor-react": "^1.4.1"
+        "i18next": "^25.7.3",
+        "phosphor-react": "^1.4.1",
+        "react-i18next": "^16.5.0"
     }
 }

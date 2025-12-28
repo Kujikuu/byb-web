@@ -4,8 +4,11 @@ import { useState } from 'react';
 import { MapPin, Phone, EnvelopeSimple, WhatsappLogo, List, X, CaretUp } from 'phosphor-react';
 import { useEffect } from 'react';
 import PageTransition from '@/Components/PageTransition';
+import LanguageSwitcher from '@/Components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 export default function PublicLayout({ children }) {
+    const { t } = useTranslation();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
 
@@ -35,14 +38,15 @@ export default function PublicLayout({ children }) {
                         </div>
                         {/* Desktop Navigation */}
                         <div className="hidden lg:flex items-center space-x-6">
-                            <NavLink href="/" active={route().current('welcome')}>Home</NavLink>
-                            <NavLink href="/calendar" active={route().current('calendar.index')}>Exhibitions Calendar</NavLink>
-                            <NavLink href="/about" active={route().current('about')}>About</NavLink>
-                            <NavLink href="/contact" active={route().current('contact')}>Contact</NavLink>
+                            <NavLink href="/" active={route().current('welcome')}>{t('common.home')}</NavLink>
+                            <NavLink href="/calendar" active={route().current('calendar.index')}>{t('common.exhibitionsCalendar')}</NavLink>
+                            <NavLink href="/about" active={route().current('about')}>{t('common.about')}</NavLink>
+                            <NavLink href="/contact" active={route().current('contact')}>{t('common.contact')}</NavLink>
                         </div>
 
                         {/* Desktop Actions */}
                         <div className="hidden lg:flex items-center gap-6">
+                            <LanguageSwitcher />
                             <a
                                 href="https://api.whatsapp.com/send?phone=966547639806"
                                 target="_blank"
@@ -52,12 +56,12 @@ export default function PublicLayout({ children }) {
                                     <WhatsappLogo size={20} weight="fill" className="text-green-600" />
                                 </div>
                                 <div className="flex flex-col">
-                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest leading-none">WhatsApp</span>
-                                    <span className="text-sm font-medium text-slate-900 leading-tight">Free Consultation</span>
+                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest leading-none">{t('common.whatsapp')}</span>
+                                    <span className="text-sm font-medium text-slate-900 leading-tight">{t('common.freeConsultation')}</span>
                                 </div>
                             </a>
                             <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-3 rounded-md text-xs transition-all uppercase tracking-wide">
-                                BUILD YOUR BOOTH
+                                {t('common.buildYourBooth')}
                             </button>
                         </div>
 
@@ -81,10 +85,13 @@ export default function PublicLayout({ children }) {
                 {mobileMenuOpen && (
                     <div className="lg:hidden border-t border-gray-100 bg-white transition-all duration-300">
                         <div className="px-4 py-8 space-y-6">
-                            <MobileNavLink href="/" active={route().current('welcome')} onClick={() => setMobileMenuOpen(false)}>Home</MobileNavLink>
-                            <MobileNavLink href="/calendar" active={route().current('calendar.index')} onClick={() => setMobileMenuOpen(false)}>Exhibitions Calendar</MobileNavLink>
-                            <MobileNavLink href="/about" active={route().current('about')} onClick={() => setMobileMenuOpen(false)}>About Us</MobileNavLink>
-                            <MobileNavLink href="/contact" active={route().current('contact')} onClick={() => setMobileMenuOpen(false)}>Contact</MobileNavLink>
+                            <MobileNavLink href="/" active={route().current('welcome')} onClick={() => setMobileMenuOpen(false)}>{t('common.home')}</MobileNavLink>
+                            <MobileNavLink href="/calendar" active={route().current('calendar.index')} onClick={() => setMobileMenuOpen(false)}>{t('common.exhibitionsCalendar')}</MobileNavLink>
+                            <MobileNavLink href="/about" active={route().current('about')} onClick={() => setMobileMenuOpen(false)}>{t('common.aboutUs')}</MobileNavLink>
+                            <MobileNavLink href="/contact" active={route().current('contact')} onClick={() => setMobileMenuOpen(false)}>{t('common.contact')}</MobileNavLink>
+                            <div className="px-4">
+                                <LanguageSwitcher />
+                            </div>
 
                             <div className="pt-6 border-t border-gray-100 space-y-4">
                                 <a
@@ -96,12 +103,12 @@ export default function PublicLayout({ children }) {
                                         <WhatsappLogo size={24} weight="fill" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] text-blue-600 font-bold uppercase tracking-widest leading-none">WhatsApp</span>
-                                        <span className="text-sm font-medium text-slate-800 leading-tight">Free Consultation</span>
+                                        <span className="text-[10px] text-blue-600 font-bold uppercase tracking-widest leading-none">{t('common.whatsapp')}</span>
+                                        <span className="text-sm font-medium text-slate-800 leading-tight">{t('common.freeConsultation')}</span>
                                     </div>
                                 </a>
                                 <button className="w-full bg-blue-600 text-white font-medium py-4 rounded-2xl text-[13px] uppercase tracking-wide">
-                                    BUILD YOUR BOOTH
+                                    {t('common.buildYourBooth')}
                                 </button>
                             </div>
                         </div>
@@ -125,45 +132,45 @@ export default function PublicLayout({ children }) {
                                 <ApplicationLogo className="h-16 w-auto" variant="white" />
                             </div>
                             <p className="text-slate-500 text-sm leading-relaxed max-w-sm">
-                                BuildYourBooth aims to assist exhibitors in building their booth in the best possible way!
+                                {t('footer.description')}
                             </p>
                             <div className="space-y-4">
-                                <ContactItem icon={MapPin} text="Riyadh, KSA" />
+                                <ContactItem icon={MapPin} text={t('footer.ksaLocation')} />
                                 <ContactItem icon={Phone} text="(+966) 54 763 9806" href="tel:+966547639806" />
-                                <ContactItem icon={MapPin} text="7 Taha Hussien st., New Nozha, Cairo" />
+                                <ContactItem icon={MapPin} text={t('footer.egyptLocation')} />
                                 <ContactItem icon={Phone} text="(+20) 100 500 3732" href="tel:+201005003732" />
-                                <ContactItem icon={EnvelopeSimple} text="hello@buildyourbooth.net" href="mailto:hello@buildyourbooth.net" />
+                                <ContactItem icon={EnvelopeSimple} text={t('footer.email')} href="mailto:hello@buildyourbooth.net" />
                             </div>
                         </div>
 
                         <div>
                             <div className="mb-8 lg:mb-10">
-                                <h4 className="font-bold text-lg mb-3 text-white">Quick Links</h4>
+                                <h4 className="font-bold text-lg mb-3 text-white">{t('common.quickLinks')}</h4>
                                 <div className="w-12 h-[2px] bg-indigo-500"></div>
                             </div>
                             <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-5">
-                                <FooterLink href="/calendar">Exhibitions Calendar</FooterLink>
-                                <FooterLink href="#">Portfolio</FooterLink>
-                                <FooterLink href="/about">About Us</FooterLink>
-                                <FooterLink href="/contact">Contact Us</FooterLink>
+                                <FooterLink href="/calendar">{t('common.exhibitionsCalendar')}</FooterLink>
+                                <FooterLink href="#">{t('common.portfolio')}</FooterLink>
+                                <FooterLink href="/about">{t('common.aboutUs')}</FooterLink>
+                                <FooterLink href="/contact">{t('common.contactUs')}</FooterLink>
                             </ul>
                         </div>
 
                         <div>
                             <div className="mb-8 lg:mb-10">
-                                <h4 className="font-bold text-lg mb-3 text-white">Quick Links</h4>
+                                <h4 className="font-bold text-lg mb-3 text-white">{t('common.quickLinks')}</h4>
                                 <div className="w-12 h-[2px] bg-indigo-500"></div>
                             </div>
                             <ul className="space-y-5">
-                                <FooterLink href="https://www.scega.gov.sa">Saudi Conventions and Exhibitions General Authority</FooterLink>
-                                <FooterLink href="http://www.eeca.gov.eg">Egypt Expo & Convention Authority (EECA)</FooterLink>
+                                <FooterLink href="https://www.scega.gov.sa">{t('footer.scega')}</FooterLink>
+                                <FooterLink href="http://www.eeca.gov.eg">{t('footer.eeca')}</FooterLink>
                             </ul>
                         </div>
                     </div>
 
                     <div className="border-t border-slate-900 pt-10 text-center">
                         <p className="text-slate-500 text-xs font-medium">
-                            Copyright © {new Date().getFullYear()}. All rights reserved.
+                            {t('common.copyright')} © {new Date().getFullYear()}. {t('common.allRightsReserved')}
                         </p>
                     </div>
                 </div>
@@ -172,9 +179,9 @@ export default function PublicLayout({ children }) {
             {/* Scroll to Top Button */}
             <button
                 onClick={scrollToTop}
-                className={`fixed bottom-8 right-8 z-50 p-4 bg-blue-600 text-white rounded-full shadow-2xl transition-all duration-300 hover:bg-blue-700 hover:-translate-y-1 focus:outline-none ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
+                className={`fixed bottom-8 end-8 z-50 p-4 bg-blue-600 text-white rounded-full shadow-2xl transition-all duration-300 hover:bg-blue-700 hover:-translate-y-1 focus:outline-none ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
                     }`}
-                aria-label="Scroll to top"
+                aria-label={t('common.scrollToTop')}
             >
                 <CaretUp size={24} weight="bold" />
             </button>

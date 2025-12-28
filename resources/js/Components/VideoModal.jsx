@@ -60,7 +60,7 @@ export default function VideoModal({ isOpen, onClose, videoUrl, videoType = 'you
                         <div className="relative bg-black rounded-lg overflow-hidden shadow-2xl">
                             <button
                                 onClick={onClose}
-                                className="absolute top-4 right-4 z-20 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center transition-colors"
+                                className="absolute top-4 end-4 z-20 w-10 h-10 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center transition-colors"
                                 aria-label="Close video"
                             >
                                 <X size={24} weight="bold" className="text-white" />

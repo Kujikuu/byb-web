@@ -5,16 +5,19 @@ import { MagnifyingGlass, Calendar, ChartPie } from 'phosphor-react';
 import PageHeader from '@/Components/PageHeader';
 import AnimatedSection, { AnimatedItem } from '@/Components/AnimatedSection';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export default function Services() {
+    const { t } = useTranslation();
+    
     return (
         <PublicLayout>
-            <Head title="Our Services - Build Your Booth" />
+            <Head title={t('services.title')} />
 
             <PageHeader
-                title="Our Services"
-                subtitle="Excellence Defined"
-                description="Comprehensive event management and discovery solutions designed to make your next exhibition a success."
+                title={t('services.pageTitle')}
+                subtitle={t('services.subtitle')}
+                description={t('services.description')}
             />
 
             <AnimatedSection className="py-20 lg:py-32 bg-white">
@@ -24,22 +27,22 @@ export default function Services() {
                         <AnimatedItem>
                             <ServiceItem
                                 icon={MagnifyingGlass}
-                                title="Event Discovery"
-                                description="Access a curated list of industry conferences, meetups, and workshops tailored to your interests and location."
+                                title={t('services.eventDiscovery')}
+                                description={t('services.eventDiscoveryDesc')}
                             />
                         </AnimatedItem>
                         <AnimatedItem>
                             <ServiceItem
                                 icon={Calendar}
-                                title="Calendar Integration"
-                                description="Sync important event dates with your personal or team calendars effortlessly with our one-click export."
+                                title={t('services.calendarIntegration')}
+                                description={t('services.calendarIntegrationDesc')}
                             />
                         </AnimatedItem>
                         <AnimatedItem>
                             <ServiceItem
                                 icon={ChartPie}
-                                title="Organizer Analytics"
-                                description="Detailed reports and insights for event organizers to track attendance, engagement, and ROI."
+                                title={t('services.organizerAnalytics')}
+                                description={t('services.organizerAnalyticsDesc')}
                             />
                         </AnimatedItem>
                     </div>

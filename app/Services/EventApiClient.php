@@ -12,16 +12,19 @@ class EventApiClient
 {
     /**
     * Get a configured HTTP client instance for the events API.
+    *
+    * @param  string|null  $locale
     */
-    protected function client(): PendingRequest
+    protected function client(?string $locale = null): PendingRequest
     {
         $baseUrl = rtrim(Config::get('events.api_base_url'), '/');
+        $locale = $locale ?? Config::get('events.default_locale', 'en');
 
         return Http::baseUrl($baseUrl)
             ->acceptJson()
             ->asJson()
             ->withHeaders([
-                'Accept-Language' => Config::get('events.default_locale', 'en'),
+                'Accept-Language' => $locale,
             ])
             ->timeout(10);
     }
@@ -30,11 +33,12 @@ class EventApiClient
     * Fetch events from the byb-db API.
     *
     * @param  array<string, mixed>  $params
+    * @param  string|null  $locale
     * @return array<string, mixed>
     */
-    public function fetchEvents(array $params = []): array
+    public function fetchEvents(array $params = [], ?string $locale = null): array
     {
-        $response = $this->client()->get('/events', $params);
+        $response = $this->client($locale)->get('/events', $params);
 
         if ($response->failed()) {
             return [
@@ -61,11 +65,12 @@ class EventApiClient
     /**
     * Fetch lookups for filters (types, industries, etc.) from the API.
     *
+    * @param  string|null  $locale
     * @return array<string, array<int, array<string, mixed>>>
     */
-    public function fetchFilterLookups(): array
+    public function fetchFilterLookups(?string $locale = null): array
     {
-        $client = $this->client();
+        $client = $this->client($locale);
 
         $endpoints = [
             'types' => '/event-types',

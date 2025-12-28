@@ -5,8 +5,10 @@ import { MapPin, MagnifyingGlass } from 'phosphor-react';
 import CalendarHeader from './CalendarHeader';
 import FilterBar from './FilterBar';
 import EventDetailCard from './EventDetailCard';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/Contexts/LanguageContext';
 
-const weekdayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+// Weekday labels will be generated dynamically based on locale
 
 function buildMonthGrid(month, year, events) {
     const firstOfMonth = new Date(year, month - 1, 1);
@@ -98,6 +100,8 @@ export default function EventCalendar({
     initialSearch = '',
     showJumpMonths = true,
 }) {
+    const { t } = useTranslation();
+    const { language } = useLanguage();
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [hoveredEventId, setHoveredEventId] = useState(null);
     const [search, setSearch] = useState(initialSearch ?? '');
@@ -128,8 +132,11 @@ export default function EventCalendar({
             }
 
             const data = Object.fromEntries(searchParams.entries());
+            // Ensure locale is included from localStorage
+            const locale = localStorage.getItem('app_language') || 'en';
+            const dataWithLocale = { ...data, locale };
 
-            router.get(route('calendar.index'), data, {
+            router.get(route('calendar.index'), dataWithLocale, {
                 preserveState: true,
                 preserveScroll: true,
                 replace: true,
@@ -139,6 +146,7 @@ export default function EventCalendar({
                     'meta',
                     'initialMonth',
                     'initialYear',
+                    'locale',
                 ],
             });
         }, 400);
@@ -184,9 +192,9 @@ export default function EventCalendar({
                             key={event.id + dateKey}
                             type="button"
                             onClick={() => setSelectedEvent(event)}
-                            className="inline-flex w-full items-center rounded-full bg-brand-primary-soft px-2 py-0.5 text-left text-[11px] font-medium text-brand-primary hover:bg-brand-primary/10"
+                            className="inline-flex w-full items-center rounded-full bg-brand-primary-soft px-2 py-0.5 text-start text-[11px] font-medium text-brand-primary hover:bg-brand-primary/10"
                         >
-                            <span className="mr-1 h-2 w-1 rounded-full bg-brand-primary" />
+                            <span className="me-1 h-2 w-1 rounded-full bg-brand-primary" />
                             <span className="truncate">
                                 {event.title}
                             </span>
@@ -194,7 +202,7 @@ export default function EventCalendar({
                     ))}
                     {extraCount > 0 && (
                         <div className="mt-0.5 text-[11px] font-medium text-brand-muted">
-                            +{extraCount} more
+                            +{extraCount} {t('common.more')}
                         </div>
                     )}
                 </div>
@@ -202,12 +210,22 @@ export default function EventCalendar({
         );
     };
 
-    const renderMonthView = () => (
+    const renderMonthView = () => {
+        // Generate weekday labels based on locale
+        const weekdayLabels = [];
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(2024, 0, i + 7); // Use a Sunday as base
+            weekdayLabels.push(
+                date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { weekday: 'short' }).toUpperCase()
+            );
+        }
+
+        return (
         <div className="flex flex-col">
             <div className="grid grid-cols-7 border-b border-brand-border/60 bg-brand-bg text-[11px] font-semibold uppercase tracking-wide text-brand-muted">
-                {weekdayLabels.map((label) => (
+                {weekdayLabels.map((label, idx) => (
                     <div
-                        key={label}
+                        key={idx}
                         className="px-2 py-2 text-center"
                     >
                         {label}
@@ -218,7 +236,8 @@ export default function EventCalendar({
                 {grid.map((day, idx) => renderDayCell(day, idx))}
             </div>
         </div>
-    );
+        );
+    };
 
     const renderListView = () => {
         // De-duplicate events by ID and only show them once
@@ -253,7 +272,7 @@ export default function EventCalendar({
         if (!listEvents.length) {
             return (
                 <div className="p-6 text-sm text-brand-muted">
-                    No events found for this month.
+                    {t('common.noEventsForMonth')}
                 </div>
             );
         }
@@ -264,7 +283,7 @@ export default function EventCalendar({
                     const startDay = start.getDate();
                     const endDay = end ? end.getDate() : null;
                     const monthLabel = start
-                        .toLocaleDateString(undefined, {
+                        .toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
                             month: 'short',
                         })
                         .toUpperCase();
@@ -274,7 +293,7 @@ export default function EventCalendar({
                             key={event.id}
                             type="button"
                             onClick={() => setSelectedEvent(event)}
-                            className="flex w-full items-stretch gap-4 px-4 py-4 text-left sm:px-6"
+                            className="flex w-full items-stretch gap-4 px-4 py-4 text-start sm:px-6"
                             transition={{
                                 duration: 0.18,
                                 ease: [0.22, 0.61, 0.36, 1],
@@ -303,7 +322,7 @@ export default function EventCalendar({
                                         ease: [0.22, 0.61, 0.36, 1],
                                     }}
                                 />
-                                <div className="ml-3 flex flex-col items-center justify-center text-slate-900">
+                                <div className="ms-3 flex flex-col items-center justify-center text-slate-900">
                                     <div className="flex items-baseline text-xl font-bold leading-none sm:text-2xl">
                                         <span>{startDay}</span>
                                         {endDay !== null &&
@@ -335,10 +354,10 @@ export default function EventCalendar({
                                     )}
                                 </div>
 
-                                {(event.industry || event.tags?.length > 0) && (
+                                    {(event.industry || event.tags?.length > 0) && (
                                     <div className="mt-1 text-[11px] text-brand-muted">
                                         <span className="font-semibold">
-                                            Industry
+                                            {t('common.industry')}
                                         </span>{' '}
                                         <span className="text-slate-700">
                                             {event.industry?.name}
@@ -349,9 +368,9 @@ export default function EventCalendar({
                                                         : ''}
                                                     {event.tags
                                                         .map(
-                                                            (t) =>
-                                                                t.name ??
-                                                                t.slug,
+                                                            (tag) =>
+                                                                tag.name ??
+                                                                tag.slug,
                                                         )
                                                         .join(', ')}
                                                 </>
@@ -378,7 +397,7 @@ export default function EventCalendar({
                                 {event.organizer && (
                                     <div className="mt-1 text-[11px] text-brand-muted">
                                         <span className="font-semibold">
-                                            Event Organized By
+                                            {t('common.eventOrganizedBy')}
                                         </span>{' '}
                                         <span className="text-slate-700">
                                             {event.organizer.name}
@@ -404,17 +423,17 @@ export default function EventCalendar({
             <div className="border-b border-brand-border bg-gradient-to-r from-brand-bg to-brand-bg px-4 py-3 sm:px-6">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div className="text-xs font-medium uppercase tracking-[0.16em] text-brand-muted sm:hidden">
-                        Search & filters
+                        {t('calendar.searchAndFilters')}
                     </div>
                     <div className="flex w-full">
                         <div className="relative w-full">
-                            <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-brand-muted">
+                            <span className="pointer-events-none absolute inset-y-0 start-3 flex items-center text-brand-muted">
                                 <MagnifyingGlass className="h-4 w-4" weight="bold" />
                             </span>
                             <input
                                 type="search"
-                                placeholder="Search events by title, industry, tag..."
-                                className="w-full rounded-full border border-brand-border bg-brand-surface py-3 pl-9 pr-3 text-xs text-slate-700 outline-none ring-0 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
+                                placeholder={t('calendar.searchPlaceholder')}
+                                className="w-full rounded-full border border-brand-border bg-brand-surface py-3 ps-9 pe-3 text-xs text-slate-700 outline-none ring-0 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />

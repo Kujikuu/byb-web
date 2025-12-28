@@ -1,10 +1,12 @@
 import { router, usePage } from '@inertiajs/react';
+import { useTranslation } from 'react-i18next';
 
 export default function FilterBar({
     showSearch = false,
     search,
     onSearchChange,
 } = {}) {
+    const { t } = useTranslation();
     const { url, props } = usePage();
     const { filters } = props;
 
@@ -20,8 +22,11 @@ export default function FilterBar({
         }
 
         const data = Object.fromEntries(searchParams.entries());
+        // Ensure locale is included from localStorage
+        const locale = localStorage.getItem('app_language') || 'en';
+        const dataWithLocale = { ...data, locale };
 
-        router.get(route('calendar.index'), data, {
+        router.get(route('calendar.index'), dataWithLocale, {
             preserveState: true,
             preserveScroll: true,
         });
@@ -39,11 +44,11 @@ export default function FilterBar({
                 {label}
             </label>
             <select
-                className="rounded-full border border-brand-border bg-brand-surface px-3 py-1.5 text-xs text-slate-700 focus:border-brand-primary focus:ring-brand-primary/60"
+                className="rounded-full border border-brand-border bg-brand-surface py-1.5 text-xs text-slate-700 focus:border-brand-primary focus:ring-brand-primary/60"
                 value={filters?.active?.[name] ?? ''}
                 onChange={(e) => applyFilter(name, e.target.value)}
             >
-                <option value="">All</option>
+                <option value="">{t('common.all')}</option>
                 {options?.map((opt) => (
                     <option key={opt.id ?? opt[valueKey]} value={opt[valueKey]}>
                         {opt[labelKey] ?? opt[valueKey]}
@@ -59,21 +64,21 @@ export default function FilterBar({
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                     {renderSelect(
                         'type',
-                        'Type',
+                        t('common.type'),
                         filters?.options?.types,
                         'slug',
                         'name',
                     )}
                     {renderSelect(
                         'industry',
-                        'Industry',
+                        t('common.industry'),
                         filters?.options?.industries,
                         'slug',
                         'name',
                     )}
                     {renderSelect(
                         'country',
-                        'Country',
+                        t('common.country'),
                         filters?.options?.countries,
                         'code',
                         'name',
@@ -97,7 +102,7 @@ export default function FilterBar({
                     <div className="flex items-center gap-2">
                         <input
                             type="search"
-                            placeholder="Search events..."
+                            placeholder={t('calendar.searchPlaceholder')}
                             className="w-full rounded-full border border-brand-border bg-brand-surface px-3 py-1.5 text-xs text-slate-700 focus:border-brand-primary focus:ring-brand-primary/60 sm:w-60"
                             value={search ?? ''}
                             onChange={(e) =>

@@ -17,6 +17,15 @@ class CalendarController extends Controller
         $month = (int) $request->query('month', $now->month);
         $year = (int) $request->query('year', $now->year);
 
+        // Get locale from request (query param, cookie, header, or default)
+        $locale = $request->query('locale')
+            ?? $request->cookie('app_language')
+            ?? $request->header('Accept-Language')
+            ?? 'en';
+
+        // Normalize locale (accept 'ar' or 'en' only)
+        $locale = in_array($locale, ['ar', 'en']) ? $locale : 'en';
+
         $current = Carbon::createFromDate($year, $month, 1)->startOfMonth();
         $startDate = $current->copy()->startOfMonth()->toDateString();
         $endDate = $current->copy()->endOfMonth()->toDateString();
@@ -40,7 +49,7 @@ class CalendarController extends Controller
             'per_page' => 200,
         ]);
 
-        $eventsPayload = $client->fetchEvents($apiParams);
+        $eventsPayload = $client->fetchEvents($apiParams, $locale);
 
         // For filter options, we want all values for the current month,
         // regardless of the currently active filters (except date range).
@@ -51,7 +60,7 @@ class CalendarController extends Controller
             'per_page' => 200,
         ];
 
-        $optionsPayload = $client->fetchEvents($optionsParams);
+        $optionsPayload = $client->fetchEvents($optionsParams, $locale);
 
         // Normalized events for the current visible month, without filters
         $currentEvents = $optionsPayload['events'] ?? [];
@@ -114,6 +123,7 @@ class CalendarController extends Controller
             'ui' => [
                 'showJumpMonths' => (bool) config('events.show_jump_months', true),
             ],
+            'locale' => $locale,
         ]);
     }
 }

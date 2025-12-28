@@ -29,11 +29,21 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        // Get locale from query param, cookie, header, or default to 'en'
+        $locale = $request->query('locale')
+            ?? $request->cookie('app_language')
+            ?? $request->header('Accept-Language')
+            ?? 'en';
+        
+        // Normalize locale (accept 'ar' or 'en' only)
+        $locale = in_array($locale, ['ar', 'en']) ? $locale : 'en';
+
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
             ],
+            'locale' => $locale,
         ];
     }
 }

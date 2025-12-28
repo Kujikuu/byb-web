@@ -11,8 +11,12 @@ import {
     GoogleLogo,
     Bed,
 } from 'phosphor-react';
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@/Contexts/LanguageContext';
 
 export default function EventDetailCard({ event, onClose }) {
+    const { t } = useTranslation();
+    const { language } = useLanguage();
     const [showOrganizerDetails, setShowOrganizerDetails] = useState(false);
 
     const truncate = (text, maxLength = 150) => {
@@ -45,11 +49,11 @@ export default function EventDetailCard({ event, onClose }) {
     const startDay = start ? start.getDate() : null;
     const endDay = end ? end.getDate() : null;
     const monthLabel = start
-        ? start.toLocaleDateString(undefined, { month: 'short' }).toUpperCase()
+        ? start.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', { month: 'short' }).toUpperCase()
         : null;
 
     const formatDate = (date) =>
-        date?.toLocaleDateString(undefined, {
+        date?.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
             weekday: 'short',
             month: 'short',
             day: 'numeric',
@@ -57,7 +61,7 @@ export default function EventDetailCard({ event, onClose }) {
         });
 
     const formatTime = (date) =>
-        date?.toLocaleTimeString(undefined, {
+        date?.toLocaleTimeString(language === 'ar' ? 'ar-SA' : 'en-US', {
             hour: '2-digit',
             minute: '2-digit',
         });
@@ -244,7 +248,7 @@ export default function EventDetailCard({ event, onClose }) {
                             {/* Date block */}
                             <div className="flex items-center">
                                 <div className="h-full w-1 rounded-full bg-brand-primary" />
-                                <div className="ml-3 flex flex-col items-center justify-center text-slate-900">
+                                <div className="ms-3 flex flex-col items-center justify-center text-slate-900">
                                     <div className="flex items-baseline text-xl font-black leading-none sm:text-2xl">
                                         {startDay !== null && (
                                             <span>{startDay}</span>
@@ -285,13 +289,13 @@ export default function EventDetailCard({ event, onClose }) {
                                     {event.title}
                                 </h2>
                                 <div className="text-[11px] font-medium uppercase tracking-wide text-brand-muted">
-                                    <span>{event.type?.name ?? 'Event'}</span>
+                                    <span>{event.type?.name ?? t('common.type')}</span>
                                 </div>
 
                                 {(event.industry || event.tags?.length > 0) && (
                                     <div className="text-[11px] text-brand-muted">
                                         <span className="font-semibold">
-                                            Industry
+                                            {t('common.industry')}
                                         </span>{' '}
                                         <span className="text-slate-700">
                                             {event.industry?.name}
@@ -333,7 +337,7 @@ export default function EventDetailCard({ event, onClose }) {
                                 {event.organizer && (
                                     <div className="text-[11px] text-slate-500">
                                         <span className="font-semibold">
-                                            Event Organized By
+                                            {t('common.eventOrganizedBy')}
                                         </span>{' '}
                                         <span className="text-slate-700">
                                             {event.organizer.name}
@@ -343,7 +347,7 @@ export default function EventDetailCard({ event, onClose }) {
                             </div>
                         </div>
 
-                        <div className="ml-4 flex-shrink-0">
+                        <div className="ms-4 flex-shrink-0">
                             <button
                                 type="button"
                                 onClick={onClose}
@@ -375,7 +379,7 @@ export default function EventDetailCard({ event, onClose }) {
                                         className="h-4 w-4 text-slate-400"
                                         weight="fill"
                                     />
-                                    <span>Event Details</span>
+                                    <span>{t('common.eventDetails')}</span>
                                 </div>
                                 <div
                                     className="prose prose-sm mt-1 max-w-none text-slate-800 prose-headings:text-slate-900 prose-a:text-brand-primary hover:prose-a:text-brand-primary-dark prose-strong:text-slate-900 prose-ul:list-disc prose-ol:list-decimal prose-li:marker:text-brand-muted"
@@ -395,7 +399,7 @@ export default function EventDetailCard({ event, onClose }) {
                                             className="h-4 w-4 text-slate-400"
                                             weight="fill"
                                         />
-                                        <span>Time</span>
+                                        <span>{t('common.time')}</span>
                                     </div>
                                     <div className="mt-1 text-sm text-slate-800">
                                         {start && (
@@ -423,7 +427,7 @@ export default function EventDetailCard({ event, onClose }) {
                                                 className="h-4 w-4 text-slate-400"
                                                 weight="fill"
                                             />
-                                            <span>Location</span>
+                                            <span>{t('common.location')}</span>
                                         </div>
                                         <div className="mt-1 text-sm text-slate-800">
                                             {event.venue.name}
@@ -441,7 +445,7 @@ export default function EventDetailCard({ event, onClose }) {
                                                 rel="noreferrer"
                                                 className="mt-1 inline-flex text-xs font-semibold text-brand-primary hover:text-brand-primary-dark"
                                             >
-                                                View on Google Maps
+                                                {t('common.viewOnGoogleMaps')}
                                             </a>
                                         )}
                                     </div>
@@ -458,7 +462,7 @@ export default function EventDetailCard({ event, onClose }) {
                                             className="h-4 w-4 text-brand-muted"
                                             weight="fill"
                                         />
-                                        <span>Nearby stays</span>
+                                        <span>{t('common.nearbyStays')}</span>
                                     </div>
                                 </div>
                                 <div className="mt-2 overflow-hidden rounded-2xl border border-brand-border bg-brand-bg">
@@ -509,7 +513,7 @@ export default function EventDetailCard({ event, onClose }) {
                                     <div className="min-w-0 flex-1">
                                         <div>
                                             <div className="text-[11px] font-semibold uppercase tracking-wide text-brand-muted">
-                                                Organizer
+                                                {t('common.organizer')}
                                             </div>
                                             <div className="mt-0.5 text-sm font-semibold text-slate-900">
                                                 {event.organizer.name}
@@ -539,8 +543,8 @@ export default function EventDetailCard({ event, onClose }) {
                                                             rel="noreferrer"
                                                             className="inline-flex items-center rounded-button bg-brand-primary px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-white hover:bg-brand-primary-dark hover:text-white"
                                                         >
-                                                            <LinkSimple className="mr-1.5 h-3 w-3" weight="fill" />
-                                                            Website
+                                                            <LinkSimple className="me-1.5 h-3 w-3" weight="fill" />
+                                                            {t('common.website')}
                                                         </a>
                                                     )}
                                                     {event.organizer.email && (
@@ -548,7 +552,7 @@ export default function EventDetailCard({ event, onClose }) {
                                                             href={`mailto:${event.organizer.email}`}
                                                             className="inline-flex items-center rounded-button border border-brand-border bg-white px-2.5 py-0.5 text-[11px] font-medium text-slate-700 hover:bg-brand-primary-soft"
                                                         >
-                                                            <EnvelopeSimple className="mr-1.5 h-3.5 w-3.5 text-brand-muted" weight="fill" />
+                                                            <EnvelopeSimple className="me-1.5 h-3.5 w-3.5 text-brand-muted" weight="fill" />
                                                             <span className="max-w-[180px] truncate sm:max-w-xs">
                                                                 {event.organizer.email}
                                                             </span>
@@ -560,7 +564,7 @@ export default function EventDetailCard({ event, onClose }) {
                                                             className="inline-flex items-center rounded-button border border-brand-border bg-white px-2.5 py-0.5 text-[11px] font-medium text-slate-700 hover:bg-brand-primary-soft"
                                                         >
                                                             <span className="truncate">
-                                                                Phone: {event.organizer.phone}
+                                                                {t('common.phone')}: {event.organizer.phone}
                                                             </span>
                                                         </a>
                                                     )}
@@ -591,11 +595,11 @@ export default function EventDetailCard({ event, onClose }) {
                                 <div className="mt-2 rounded-2xl bg-white px-4 py-3 ring-1 ring-slate-100">
                                     <div className="mb-3 flex items-center justify-between gap-2">
                                         <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-                                            Related events
+                                            {t('common.relatedEvents')}
                                         </div>
                                         {event.relatedEvents.length > 3 && (
                                             <div className="text-[11px] text-slate-400">
-                                                Showing 3 of {event.relatedEvents.length}
+                                                {t('common.showing')} 3 {t('common.of')} {event.relatedEvents.length}
                                             </div>
                                         )}
                                     </div>
@@ -625,7 +629,7 @@ export default function EventDetailCard({ event, onClose }) {
                                                             event.onSelectRelated(related);
                                                         }
                                                     }}
-                                                    className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 text-left text-xs text-slate-800 transition hover:border-emerald-400 hover:bg-emerald-50"
+                                                    className="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 text-start text-xs text-slate-800 transition hover:border-emerald-400 hover:bg-emerald-50"
                                                 >
                                                     {relatedHeroUrl && (
                                                         <div className="h-20 w-full flex-shrink-0 overflow-hidden bg-slate-200">
@@ -652,14 +656,14 @@ export default function EventDetailCard({ event, onClose }) {
                                                                 <Clock className="h-3.5 w-3.5 text-slate-400" />
                                                                 <span className="truncate">
                                                                     {relatedStart.toLocaleDateString(
-                                                                        undefined,
+                                                                        language === 'ar' ? 'ar-SA' : 'en-US',
                                                                         {
                                                                             month: 'short',
                                                                             day: 'numeric',
                                                                         },
                                                                     )}{' '}
                                                                     {relatedStart.toLocaleTimeString(
-                                                                        undefined,
+                                                                        language === 'ar' ? 'ar-SA' : 'en-US',
                                                                         {
                                                                             hour: '2-digit',
                                                                             minute: '2-digit',
@@ -696,10 +700,10 @@ export default function EventDetailCard({ event, onClose }) {
                                             className="btn-primary px-4 py-1.5 text-xs"
                                         >
                                             <LinkSimple
-                                                className="mr-1.5 h-4 w-4"
+                                                className="me-1.5 h-4 w-4"
                                                 weight="fill"
                                             />
-                                            <span>Learn more</span>
+                                            <span>{t('common.learnMore')}</span>
                                         </a>
                                     )}
 
@@ -710,8 +714,8 @@ export default function EventDetailCard({ event, onClose }) {
                                                 onClick={downloadIcs}
                                                 className="inline-flex items-center justify-center rounded-button border border-brand-border bg-brand-surface px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-slate-700 hover:bg-brand-primary-soft"
                                             >
-                                                <CalendarPlus className="mr-1.5 h-4 w-4 text-brand-muted" weight="fill" />
-                                                Add to calendar
+                                                <CalendarPlus className="me-1.5 h-4 w-4 text-brand-muted" weight="fill" />
+                                                {t('common.addToCalendar')}
                                             </button>
                                             <a
                                                 href={buildGoogleCalendarUrl()}
@@ -719,8 +723,8 @@ export default function EventDetailCard({ event, onClose }) {
                                                 rel="noreferrer"
                                                 className="btn-outline px-3 py-1.5 text-[11px]"
                                             >
-                                                <GoogleLogo className="mr-1.5 h-4 w-4" weight="fill" />
-                                                Add to Google Calendar
+                                                <GoogleLogo className="me-1.5 h-4 w-4" weight="fill" />
+                                                {t('common.addToGoogleCalendar')}
                                             </a>
                                         </div>
                                     )}
@@ -755,7 +759,7 @@ export default function EventDetailCard({ event, onClose }) {
                                             />
                                             <div>
                                                 <div className="text-xs font-semibold uppercase tracking-wide text-brand-muted">
-                                                    Organizer
+                                                    {t('common.organizer')}
                                                 </div>
                                                 <div className="mt-1 text-sm font-semibold text-slate-900">
                                                     {event.organizer.name}
@@ -770,7 +774,7 @@ export default function EventDetailCard({ event, onClose }) {
                                                         rel="noreferrer"
                                                         className="mt-0.5 inline-flex text-xs font-semibold text-brand-primary hover:text-brand-primary-dark"
                                                     >
-                                                        Visit website
+                                                        {t('common.visitWebsite')}
                                                     </a>
                                                 )}
                                             </div>
@@ -780,7 +784,7 @@ export default function EventDetailCard({ event, onClose }) {
                                             onClick={() =>
                                                 setShowOrganizerDetails(false)
                                             }
-                                            className="ml-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-bg text-brand-muted hover:bg-brand-primary-soft"
+                                            className="ms-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-bg text-brand-muted hover:bg-brand-primary-soft"
                                         >
                                             ✕
                                         </button>
@@ -798,13 +802,13 @@ export default function EventDetailCard({ event, onClose }) {
                                                     {event.organizer.email && (
                                                         <div className="flex items-center gap-1">
                                                             <span className="font-semibold">
-                                                                Email:
+                                                                {t('common.email')}:
                                                             </span>
                                                             <a
                                                                 href={`mailto:${event.organizer.email}`}
                                                                 className="inline-flex items-center text-brand-primary hover:text-brand-primary-dark"
                                                             >
-                                                                <EnvelopeSimple className="mr-1 h-3.5 w-3.5" weight="fill" />
+                                                                <EnvelopeSimple className="me-1 h-3.5 w-3.5" weight="fill" />
                                                                 <span>{event.organizer.email}</span>
                                                             </a>
                                                         </div>
@@ -812,7 +816,7 @@ export default function EventDetailCard({ event, onClose }) {
                                                     {event.organizer.phone && (
                                                         <div>
                                                             <span className="font-semibold">
-                                                                Phone:
+                                                                {t('common.phone')}:
                                                             </span>{' '}
                                                             {event.organizer.phone}
                                                         </div>
@@ -820,7 +824,7 @@ export default function EventDetailCard({ event, onClose }) {
                                                     {event.organizer.address && (
                                                         <div>
                                                             <span className="font-semibold">
-                                                                Address:
+                                                                {t('common.address')}:
                                                             </span>{' '}
                                                             {event.organizer.address}
                                                         </div>
