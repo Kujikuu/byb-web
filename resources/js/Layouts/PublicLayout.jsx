@@ -37,7 +37,7 @@ export default function PublicLayout({ children }) {
 
                         </div>
                         {/* Desktop Navigation */}
-                        <div className="hidden lg:flex items-center space-x-6">
+                        <div className="hidden lg:flex items-center gap-6">
                             <NavLink href="/" active={route().current('welcome')}>{t('common.home')}</NavLink>
                             <NavLink href="/calendar" active={route().current('calendar.index')}>{t('common.exhibitionsCalendar')}</NavLink>
                             <NavLink href="/about" active={route().current('about')}>{t('common.about')}</NavLink>
@@ -193,7 +193,7 @@ function NavLink({ href, active, children }) {
     return (
         <Link
             href={href}
-            className={`inline-flex items-center text-base font-medium leading-5 transition duration-150 ease-in-out focus:outline-none uppercase tracking-tight whitespace-nowrap ${active
+            className={`inline-flex items-center text-center text-base font-medium leading-5 transition duration-150 ease-in-out focus:outline-none ${active
                 ? 'text-blue-600 lg:bg-blue-600/10 lg:px-4 lg:py-2 lg:rounded-md transition-all ease-in-out'
                 : 'text-slate-600 hover:text-blue-600 lg:px-4'
                 }`}
