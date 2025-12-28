@@ -19,15 +19,15 @@ export default function Welcome() {
             <Head title="Build Your Booth - Exceptional Booth Building Experience" />
 
             {/* Hero Section */}
-            <section className="relative flex items-center overflow-hidden -mt-20 pt-20 z-0">
+            <section className="relative flex items-center overflow-hidden mt-0 lg:-mt-20 pt-0 lg:pt-20 z-0">
                 <div className="flex w-full h-full">
                     {/* Left Section - 1/2 width */}
                     <div
-                        className="w-full lg:w-1/2 bg-[#f6f4ef] relative flex items-center px-4 sm:px-6 lg:px-12 xl:px-16"
+                        className="w-full lg:w-1/2 bg-[#f6f4ef] relative flex items-center px-4 py-0 sm:py-10 sm:px-6 lg:px-12 xl:px-16"
                         style={{
                             backgroundImage: `url('${BACKGROUND_IMG}')`,
-                            backgroundSize: 'cover',
-                            backgroundPosition: '50%',
+                            backgroundSize: 'auto',
+                            backgroundPosition: 'center right',
                             backgroundRepeat: 'no-repeat',
                         }}
                     >
