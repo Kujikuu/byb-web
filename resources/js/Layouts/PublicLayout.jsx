@@ -23,7 +23,7 @@ export default function PublicLayout({ children }) {
         <div className="min-h-screen bg-white font-sans text-slate-900">
             {/* Navigation */}
             {/* Navigation */}
-            <nav className="top-0 z-50">
+            <nav className="relative top-0 z-50 bg-[#f6f4ef]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-20">
                         <div className="flex items-center gap-8">

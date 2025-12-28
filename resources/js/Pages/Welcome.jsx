@@ -1,35 +1,73 @@
 import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { CaretRight, PaintBrush, Wrench, ChartBar, Play } from 'phosphor-react';
 import CTABanner from '@/Components/CTABanner';
+import VideoModal from '@/Components/VideoModal';
+import ApplicationLogo from '@/Components/ApplicationLogo';
 
 const BOOTH_SHOWCASE_IMG = '/images/booth_showcase.png';
 const CONSULTATION_BG_IMG = '/images/consultation_bg.png';
+const BACKGROUND_IMG = '/images/background.png';
 
 export default function Welcome() {
+    const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+    // TODO: Replace with actual video URL
+    const videoUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'; // Placeholder
     return (
         <PublicLayout>
             <Head title="Build Your Booth - Exceptional Booth Building Experience" />
 
             {/* Hero Section */}
-            <section className="relative min-h-[85vh] flex items-center overflow-hidden bg-white">
-                {/* Background Patterns */}
-                <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
-                    <div className="absolute top-20 left-10 w-64 h-64 border border-blue-100 rounded-full blur-3xl" />
-                    <div className="absolute bottom-10 right-1/2 w-96 h-96 border border-blue-50 rounded-full blur-3xl" />
-                    <div className="absolute top-1/4 left-[10%] opacity-10">
-                        {/* Dot Grid Pattern */}
-                        <div className="grid grid-cols-10 gap-2">
-                            {[...Array(50)].map((_, i) => (
-                                <div key={i} className={`w-1 h-1 rounded-full ${i % 2 === 0 ? 'bg-orange-500' : 'bg-blue-600'}`} />
-                            ))}
+            <section className="relative flex items-center overflow-hidden -mt-20 pt-20 z-0">
+                <div className="flex w-full h-full">
+                    {/* Left Section - 1/2 width */}
+                    <div
+                        className="w-full lg:w-1/2 bg-[#f6f4ef] relative flex items-center px-4 sm:px-6 lg:px-12 xl:px-16"
+                        style={{
+                            backgroundImage: `url('${BACKGROUND_IMG}')`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: '50%',
+                            backgroundRepeat: 'no-repeat',
+                        }}
+                    >
+                        {/* Large White Plus Sign - Upper Middle */}
+                        <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 opacity-20 pointer-events-none">
+                            <div className="text-9xl font-thin text-white select-none">+</div>
                         </div>
-                    </div>
-                </div>
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                        <div className="space-y-8">
+                        {/* Thin Curved White Lines */}
+                        <div className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+                            <svg className="absolute top-20 right-20 w-64 h-64" viewBox="0 0 200 200">
+                                <path d="M 20 100 Q 50 50, 100 80 T 180 100" stroke="white" strokeWidth="2" fill="none" />
+                            </svg>
+                            <svg className="absolute bottom-20 left-20 w-64 h-64" viewBox="0 0 200 200">
+                                <path d="M 20 100 Q 50 150, 100 120 T 180 100" stroke="white" strokeWidth="2" fill="none" />
+                            </svg>
+                        </div>
+
+                        {/* Chevrons - Below Content, Pointing Right */}
+                        <div className="absolute bottom-24 left-10 opacity-20 pointer-events-none">
+                            <div className="flex gap-3">
+                                {[...Array(8)].map((_, i) => (
+                                    <div key={i} className="text-slate-400 text-2xl font-thin">&gt;</div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Dots Pattern - Bottom Right */}
+                        <div className="absolute bottom-10 right-20 opacity-15 pointer-events-none">
+                            <div className="grid grid-cols-6 gap-2">
+                                {[...Array(24)].map((_, i) => (
+                                    <div
+                                        key={i}
+                                        className={`w-1.5 h-1.5 rounded-full ${i % 4 === 0 ? 'bg-red-500' : 'bg-white'}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="relative z-10 max-w-2xl space-y-8">
                             <div className="space-y-4">
                                 <h4 className="text-sm font-bold text-slate-900 uppercase tracking-widest flex items-center gap-2">
                                     <span className="w-8 h-[2px] bg-blue-600" />
@@ -58,24 +96,42 @@ export default function Welcome() {
                                 </p>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="relative group">
-                            <div className="absolute -inset-4 bg-blue-600/5 rounded-3xl blur-2xl group-hover:bg-blue-600/10 transition-colors" />
-                            <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-video bg-slate-900 group cursor-pointer border-4 border-white">
-                                <img
-                                    src={BOOTH_SHOWCASE_IMG}
-                                    className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700"
-                                    alt="Booth Showcase"
-                                />
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/50 shadow-2xl transition-transform group-hover:scale-110">
-                                        <Play size={32} weight="fill" className="text-white ml-1" />
-                                    </div>
+                    {/* Right Section - 1/2 width */}
+                    <div className="hidden lg:flex w-1/2 bg-slate-900 relative items-center justify-center h-[640px]">
+                        {/* Branded Logo/Cube Behind Play Button */}
+                        <div className="absolute inset-0 flex items-center justify-center opacity-20">
+                            <div className="text-center">
+                                <div className="mb-4">
+                                    <ApplicationLogo className="h-16 w-auto mx-auto opacity-30" />
+                                </div>
+                                <div className="text-white/20 text-xs font-bold uppercase tracking-widest">
+                                    BUILD YOUR BOOTH
                                 </div>
                             </div>
                         </div>
+
+                        {/* Play Button */}
+                        <button
+                            onClick={() => setIsVideoModalOpen(true)}
+                            className="relative z-10 group cursor-pointer transition-transform hover:scale-110"
+                            aria-label="Play video"
+                        >
+                            <div className="w-32 h-32 bg-purple-400 rounded-full flex items-center justify-center shadow-2xl">
+                                <Play size={48} weight="fill" className="text-white ml-2" />
+                            </div>
+                        </button>
                     </div>
                 </div>
+
+                {/* Video Modal */}
+                <VideoModal
+                    isOpen={isVideoModalOpen}
+                    onClose={() => setIsVideoModalOpen(false)}
+                    videoUrl={videoUrl}
+                    videoType="youtube"
+                />
             </section>
 
             {/* Services Section */}
