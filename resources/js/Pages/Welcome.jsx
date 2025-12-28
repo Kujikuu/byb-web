@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { CaretRight, PaintBrush, Wrench, ChartBar, Play } from 'phosphor-react';
+import CTABanner from '@/Components/CTABanner';
 
 const BOOTH_SHOWCASE_IMG = '/images/booth_showcase.png';
 const CONSULTATION_BG_IMG = '/images/consultation_bg.png';
@@ -112,25 +113,12 @@ export default function Welcome() {
             </section>
 
             {/* Consultation Banner */}
-            <section className="relative py-24 lg:py-32 overflow-hidden group">
-                <div className="absolute inset-0 z-0">
-                    <img src={CONSULTATION_BG_IMG} className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000" alt="Consultation" />
-                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" />
-                </div>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="max-w-3xl space-y-8">
-                        <div className="space-y-4">
-                            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white tracking-tighter">Get a Free Consultation!</h2>
-                            <p className="text-lg sm:text-xl text-white/90 font-medium max-w-xl">
-                                Get your booth ready for your next event! Contact us now for a FREE consultation!
-                            </p>
-                        </div>
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-10 py-5 rounded-md text-sm transition-all uppercase tracking-wide">
-                            REQUEST CONSULTATION
-                        </button>
-                    </div>
-                </div>
-            </section>
+            <CTABanner
+                title="Get a Free Consultation!"
+                description="Get your booth ready for your next event! Contact us now for a FREE consultation!"
+                buttonText="REQUEST CONSULTATION"
+                backgroundImage={CONSULTATION_BG_IMG}
+            />
 
             {/* Working Process */}
             <section className="py-20 lg:py-32 bg-white">
