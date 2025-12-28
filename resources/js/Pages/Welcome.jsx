@@ -5,6 +5,8 @@ import { CaretRight, PaintBrush, Wrench, ChartBar, Play } from 'phosphor-react';
 import CTABanner from '@/Components/CTABanner';
 import VideoModal from '@/Components/VideoModal';
 import ApplicationLogo from '@/Components/ApplicationLogo';
+import AnimatedSection, { AnimatedItem } from '@/Components/AnimatedSection';
+import { motion } from 'framer-motion';
 
 const BOOTH_SHOWCASE_IMG = '/images/booth_showcase.png';
 const CONSULTATION_BG_IMG = '/images/consultation_bg.png';
@@ -19,7 +21,7 @@ export default function Welcome() {
             <Head title="Build Your Booth - Exceptional Booth Building Experience" />
 
             {/* Hero Section */}
-            <section className="relative flex items-center overflow-hidden mt-0 lg:-mt-20 pt-0 lg:pt-20 z-0">
+            <AnimatedSection className="relative flex items-center overflow-hidden mt-0 lg:-mt-20 pt-0 lg:pt-20 z-0">
                 <div className="flex w-full h-full">
                     {/* Left Section - 1/2 width */}
                     <div
@@ -82,13 +84,19 @@ export default function Welcome() {
                                 </p>
                             </div>
                             <div className="flex flex-wrap gap-5 items-center">
-                                <button className="bg-blue-600 hover:bg-blue-700 text-white font-black px-10 py-5 rounded-md text-sm transition-all uppercase tracking-wide">
+                                <motion.button
+                                    whileHover={{ backgroundColor: '#2563eb' }}
+                                    whileTap={{ scale: 0.98 }}
+                                    className="bg-blue-600 text-white font-black px-10 py-5 rounded-md text-sm uppercase tracking-wide"
+                                >
                                     BUILD YOUR BOOTH
-                                </button>
-                                <Link href="/calendar" className="text-slate-900 hover:text-blue-600 font-black text-sm uppercase tracking-wide flex items-center gap-2 transition-colors">
-                                    BROWSE CALENDAR
-                                    <CaretRight size={16} weight="bold" />
-                                </Link>
+                                </motion.button>
+                                <motion.div whileHover={{ color: '#2563eb' }}>
+                                    <Link href="/calendar" className="text-slate-900 font-black text-sm uppercase tracking-wide flex items-center gap-2">
+                                        BROWSE CALENDAR
+                                        <CaretRight size={16} weight="bold" />
+                                    </Link>
+                                </motion.div>
                             </div>
                             <div className="pt-4">
                                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
@@ -113,15 +121,17 @@ export default function Welcome() {
                         </div>
 
                         {/* Play Button */}
-                        <button
+                        <motion.button
                             onClick={() => setIsVideoModalOpen(true)}
-                            className="relative z-10 group cursor-pointer transition-transform hover:scale-110"
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="relative z-10 cursor-pointer"
                             aria-label="Play video"
                         >
                             <div className="w-32 h-32 bg-purple-400 rounded-full flex items-center justify-center shadow-2xl">
                                 <Play size={48} weight="fill" className="text-white ml-2" />
                             </div>
-                        </button>
+                        </motion.button>
                     </div>
                 </div>
 
@@ -132,12 +142,12 @@ export default function Welcome() {
                     videoUrl={videoUrl}
                     videoType="youtube"
                 />
-            </section>
+            </AnimatedSection>
 
             {/* Services Section */}
-            <section className="py-20 lg:py-32 bg-slate-50">
+            <AnimatedSection className="py-20 lg:py-32 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col lg:flex-row justify-between items-end gap-8 mb-20">
+                    <AnimatedItem className="flex flex-col lg:flex-row justify-between items-end gap-8 mb-20">
                         <div className="space-y-4 max-w-2xl">
                             <h4 className="text-xs font-black text-blue-600 uppercase tracking-[0.3em]">Our Services</h4>
                             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tighter">Innovative Booth Solutions</h2>
@@ -145,28 +155,34 @@ export default function Welcome() {
                         <p className="text-slate-500 font-medium max-w-md text-sm leading-relaxed pb-2">
                             Designing an exceptional booth can be challenging, but we're here to help. Check out our solutions for building and designing your booth, complete with performance reports to measure its success.
                         </p>
-                    </div>
+                    </AnimatedItem>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        <ServiceCard
-                            icon={PaintBrush}
-                            title="Booth Design"
-                            description="Our team handles everything from planning to setup, ensuring your booth attracts attention and engages your audience."
-                        />
-                        <ServiceCard
-                            icon={Wrench}
-                            title="Booth Build"
-                            description="We focus on your goals to build an attractive and effective display. With quality materials and additional features, we ensure your booth stands out."
-                            highlighted
-                        />
-                        <ServiceCard
-                            icon={ChartBar}
-                            title="Performance Report"
-                            description="We analyze visitor numbers and engagement to help you improve future exhibitions. Boost your impact with our detailed report!"
-                        />
+                        <AnimatedItem>
+                            <ServiceCard
+                                icon={PaintBrush}
+                                title="Booth Design"
+                                description="Our team handles everything from planning to setup, ensuring your booth attracts attention and engages your audience."
+                            />
+                        </AnimatedItem>
+                        <AnimatedItem>
+                            <ServiceCard
+                                icon={Wrench}
+                                title="Booth Build"
+                                description="We focus on your goals to build an attractive and effective display. With quality materials and additional features, we ensure your booth stands out."
+                                highlighted
+                            />
+                        </AnimatedItem>
+                        <AnimatedItem>
+                            <ServiceCard
+                                icon={ChartBar}
+                                title="Performance Report"
+                                description="We analyze visitor numbers and engagement to help you improve future exhibitions. Boost your impact with our detailed report!"
+                            />
+                        </AnimatedItem>
                     </div>
                 </div>
-            </section>
+            </AnimatedSection>
 
             {/* Consultation Banner */}
             <CTABanner
@@ -177,48 +193,57 @@ export default function Welcome() {
             />
 
             {/* Working Process */}
-            <section className="py-20 lg:py-32 bg-white">
+            <AnimatedSection className="py-20 lg:py-32 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <div className="max-w-3xl mx-auto space-y-6 mb-16 lg:mb-24">
+                    <AnimatedItem className="max-w-3xl mx-auto space-y-6 mb-16 lg:mb-24">
                         <h4 className="text-xs font-black text-blue-600 uppercase tracking-[0.3em]">How It Works</h4>
                         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tighter">Our Working Process</h2>
                         <p className="text-slate-500 font-medium text-sm leading-relaxed px-4 sm:px-10">
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                         </p>
-                    </div>
+                    </AnimatedItem>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         {/* Connecting Line (Desktop) */}
                         <div className="hidden lg:block absolute top-[20%] left-[15%] right-[15%] h-[1px] bg-slate-100 -z-0" />
 
-                        <ProcessStep
-                            number="01"
-                            title="Submit A Request"
-                            description="Lorem ipsum dolor sit amet, consecto adipiscin elit, sed eiusmod tempor incididunt labore et dolore magna aliqua minim"
-                        />
-                        <ProcessStep
-                            number="02"
-                            title="We call you back"
-                            description="Lorem ipsum dolor sit amet, consecto adipiscin elit, sed eiusmod tempor incididunt labore et dolore magna aliqua minim"
-                        />
-                        <ProcessStep
-                            number="03"
-                            title="Building your booth"
-                            description="Lorem ipsum dolor sit amet, consecto adipiscin elit, sed eiusmod tempor incididunt labore et dolore magna aliqua minim"
-                        />
+                        <AnimatedItem>
+                            <ProcessStep
+                                number="01"
+                                title="Submit A Request"
+                                description="Lorem ipsum dolor sit amet, consecto adipiscin elit, sed eiusmod tempor incididunt labore et dolore magna aliqua minim"
+                            />
+                        </AnimatedItem>
+                        <AnimatedItem>
+                            <ProcessStep
+                                number="02"
+                                title="We call you back"
+                                description="Lorem ipsum dolor sit amet, consecto adipiscin elit, sed eiusmod tempor incididunt labore et dolore magna aliqua minim"
+                            />
+                        </AnimatedItem>
+                        <AnimatedItem>
+                            <ProcessStep
+                                number="03"
+                                title="Building your booth"
+                                description="Lorem ipsum dolor sit amet, consecto adipiscin elit, sed eiusmod tempor incididunt labore et dolore magna aliqua minim"
+                            />
+                        </AnimatedItem>
                     </div>
                 </div>
-            </section>
+            </AnimatedSection>
         </PublicLayout>
     );
 }
 
 function ServiceCard({ icon: Icon, title, description, highlighted = false }) {
     return (
-        <div className={`p-10 rounded-2xl border transition-all duration-300 hover:-translate-y-2 ${highlighted
-            ? 'bg-blue-600 border-blue-600 text-white'
-            : 'bg-white border-slate-100 text-slate-900'
-            }`}>
+        <motion.div
+            whileHover={{ y: -8 }}
+            className={`p-10 rounded-2xl border ${highlighted
+                ? 'bg-blue-600 border-blue-600 text-white'
+                : 'bg-white border-slate-100 text-slate-900'
+                }`}
+        >
             <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-8 ${highlighted ? 'bg-white/20' : 'bg-blue-50'
                 }`}>
                 <Icon size={28} weight="bold" className={`${highlighted ? 'text-white' : 'text-blue-600'}`} />
@@ -229,22 +254,28 @@ function ServiceCard({ icon: Icon, title, description, highlighted = false }) {
                 }`}>
                 {description}
             </p>
-        </div>
+        </motion.div>
     );
 }
 
 function ProcessStep({ number, title, description }) {
     return (
-        <div className="relative z-10 group">
-            <div className="text-8xl font-black text-slate-100 transition-colors group-hover:text-blue-50/50 mb-[-3rem] select-none">
+        <motion.div
+            className="relative z-10"
+            whileHover={{ scale: 1.05 }}
+        >
+            <motion.div
+                className="text-8xl font-black text-slate-100 mb-[-3rem] select-none"
+                whileHover={{ color: 'rgba(239, 246, 255, 0.5)' }}
+            >
                 {number}
-            </div>
+            </motion.div>
             <div className="space-y-4">
                 <h3 className="text-xl font-bold text-slate-900 tracking-tight">{title}</h3>
                 <p className="text-slate-500 text-xs font-medium leading-relaxed max-w-[16rem] mx-auto">
                     {description}
                 </p>
             </div>
-        </div>
+        </motion.div>
     );
 }

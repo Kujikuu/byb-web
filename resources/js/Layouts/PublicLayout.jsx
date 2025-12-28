@@ -3,6 +3,7 @@ import { Link } from '@inertiajs/react';
 import { useState } from 'react';
 import { MapPin, Phone, EnvelopeSimple, WhatsappLogo, List, X, CaretUp } from 'phosphor-react';
 import { useEffect } from 'react';
+import PageTransition from '@/Components/PageTransition';
 
 export default function PublicLayout({ children }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -110,7 +111,9 @@ export default function PublicLayout({ children }) {
 
             {/* Page Content */}
             <main>
-                {children}
+                <PageTransition>
+                    {children}
+                </PageTransition>
             </main>
 
             {/* Footer */}

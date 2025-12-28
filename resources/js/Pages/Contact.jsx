@@ -2,6 +2,8 @@ import { Head } from '@inertiajs/react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { MapPin, Phone, EnvelopeSimple, ChatCircleText } from 'phosphor-react';
 import PageHeader from '@/Components/PageHeader';
+import AnimatedSection, { AnimatedItem } from '@/Components/AnimatedSection';
+import { motion } from 'framer-motion';
 
 export default function Contact() {
     return (
@@ -14,60 +16,73 @@ export default function Contact() {
                 description="Have a question or ready to build your next booth? We're here to help you stand out at your next exhibition."
             />
 
-            <div className="py-20 lg:py-24 bg-white">
+            <AnimatedSection className="py-20 lg:py-24 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
                         {/* Contact Form */}
-                        <div className="bg-white p-6 sm:p-12 rounded-3xl border border-gray-100">
+                        <AnimatedItem className="bg-white p-6 sm:p-12 rounded-3xl border border-gray-100">
                             <h3 className="text-3xl font-bold text-slate-900 mb-8 tracking-tight">Send us a message</h3>
                             <form className="space-y-6">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Full Name</label>
-                                        <input
+                                        <motion.input
                                             type="text"
                                             placeholder="John Doe"
-                                            className="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600/20 transition-all outline-none"
+                                            whileFocus={{ scale: 1.02 }}
+                                            className="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600/20 outline-none"
                                         />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Email Address</label>
-                                        <input
+                                        <motion.input
                                             type="email"
                                             placeholder="john@example.com"
-                                            className="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600/20 transition-all outline-none"
+                                            whileFocus={{ scale: 1.02 }}
+                                            className="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600/20 outline-none"
                                         />
                                     </div>
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Subject</label>
-                                    <input
+                                    <motion.input
                                         type="text"
                                         placeholder="Project Inquiry"
-                                        className="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600/20 transition-all outline-none"
+                                        whileFocus={{ scale: 1.02 }}
+                                        className="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600/20 outline-none"
                                     />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Message</label>
-                                    <textarea
+                                    <motion.textarea
                                         rows="5"
                                         placeholder="Tell us about your project..."
-                                        className="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600/20 transition-all outline-none resize-none"
-                                    ></textarea>
+                                        whileFocus={{ scale: 1.02 }}
+                                        className="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600/20 outline-none resize-none"
+                                    ></motion.textarea>
                                 </div>
-                                <button type="button" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 rounded-2xl transition-all uppercase tracking-widest text-xs">
+                                <motion.button
+                                    type="button"
+                                    whileHover={{ backgroundColor: '#1d4ed8' }}
+                                    whileTap={{ scale: 0.98 }}
+                                    className="w-full bg-blue-600 text-white font-bold py-5 rounded-2xl uppercase tracking-widest text-xs"
+                                >
                                     Send Message
-                                </button>
+                                </motion.button>
                             </form>
-                        </div>
+                        </AnimatedItem>
 
                         {/* Contact Info */}
-                        <div className="flex flex-col">
+                        <AnimatedItem className="flex flex-col">
                             <h3 className="text-3xl font-bold text-slate-900 mb-8 tracking-tight">Information</h3>
 
                             <div className="space-y-6">
                                 {/* KSA Office */}
-                                <div className="flex gap-6 p-6 rounded-3xl border border-slate-50 hover:border-blue-100 transition-colors">
+                                <AnimatedItem>
+                                    <motion.div
+                                        whileHover={{ borderColor: '#dbeafe' }}
+                                        className="flex gap-6 p-6 rounded-3xl border border-slate-50"
+                                    >
                                     <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
                                         <MapPin size={28} weight="bold" className="text-blue-600" />
                                     </div>
@@ -82,10 +97,15 @@ export default function Contact() {
                                             <a href="tel:+966547639806" className="hover:underline">(+966) 54 763 9806</a>
                                         </div>
                                     </div>
-                                </div>
+                                    </motion.div>
+                                </AnimatedItem>
 
                                 {/* Egypt Office */}
-                                <div className="flex gap-6 p-6 rounded-3xl border border-slate-50 hover:border-blue-100 transition-colors">
+                                <AnimatedItem>
+                                    <motion.div
+                                        whileHover={{ borderColor: '#dbeafe' }}
+                                        className="flex gap-6 p-6 rounded-3xl border border-slate-50"
+                                    >
                                     <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
                                         <MapPin size={28} weight="bold" className="text-blue-600" />
                                     </div>
@@ -100,10 +120,15 @@ export default function Contact() {
                                             <a href="tel:+201005003732" className="hover:underline">(+20) 100 500 3732</a>
                                         </div>
                                     </div>
-                                </div>
+                                    </motion.div>
+                                </AnimatedItem>
 
                                 {/* General Contact */}
-                                <div className="flex gap-6 p-6 rounded-3xl border border-slate-50 hover:border-blue-100 transition-colors">
+                                <AnimatedItem>
+                                    <motion.div
+                                        whileHover={{ borderColor: '#dbeafe' }}
+                                        className="flex gap-6 p-6 rounded-3xl border border-slate-50"
+                                    >
                                     <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center shrink-0">
                                         <EnvelopeSimple size={28} weight="bold" className="text-blue-600" />
                                     </div>
@@ -127,12 +152,13 @@ export default function Contact() {
                                             </a>
                                         </div>
                                     </div>
-                                </div>
+                                    </motion.div>
+                                </AnimatedItem>
                             </div>
-                        </div>
+                        </AnimatedItem>
                     </div>
                 </div>
-            </div>
+            </AnimatedSection>
         </PublicLayout>
     );
 }

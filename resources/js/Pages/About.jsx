@@ -3,6 +3,8 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import { Check, ArrowRight } from 'phosphor-react';
 import PageHeader from '@/Components/PageHeader';
 import CTABanner from '@/Components/CTABanner';
+import AnimatedSection, { AnimatedItem } from '@/Components/AnimatedSection';
+import { motion } from 'framer-motion';
 
 const CONSULTATION_BG_IMG = '/images/consultation_bg.png';
 
@@ -18,11 +20,11 @@ export default function About() {
             />
 
             {/* Welcome To Build Your Booth Section */}
-            <section className="py-20 lg:py-32 bg-white">
+            <AnimatedSection className="py-20 lg:py-32 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                         {/* Left Content */}
-                        <div className="space-y-6">
+                        <AnimatedItem className="space-y-6">
                             <h4 className="text-xs font-black text-blue-600 uppercase tracking-[0.3em]">
                                 Welcome To Build Your Booth
                             </h4>
@@ -59,10 +61,10 @@ export default function About() {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </AnimatedItem>
 
                         {/* Right Image */}
-                        <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-200 aspect-[4/5]">
+                        <AnimatedItem className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-200 aspect-[4/5]">
                             <img
                                 src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800"
                                 className="w-full h-full object-cover"
@@ -73,17 +75,17 @@ export default function About() {
                                 <div className="text-3xl font-black mb-1">1450+</div>
                                 <div className="text-sm font-bold uppercase tracking-wide">Trusted Clients</div>
                             </div>
-                        </div>
+                        </AnimatedItem>
                     </div>
                 </div>
-            </section>
+            </AnimatedSection>
 
             {/* Why Choose Us Section */}
-            <section className="py-20 lg:py-32 bg-slate-50">
+            <AnimatedSection className="py-20 lg:py-32 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                         {/* Left Image */}
-                        <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-200 aspect-square">
+                        <AnimatedItem className="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-200 aspect-square">
                             <img
                                 src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800"
                                 className="w-full h-full object-cover"
@@ -96,10 +98,10 @@ export default function About() {
                                 </p>
                                 <p className="text-xs font-bold text-blue-600">Alan Alexander</p>
                             </div>
-                        </div>
+                        </AnimatedItem>
 
                         {/* Right Content */}
-                        <div className="space-y-6">
+                        <AnimatedItem className="space-y-6">
                             <h4 className="text-xs font-black text-blue-600 uppercase tracking-[0.3em]">
                                 Why Choose Us
                             </h4>
@@ -139,17 +141,20 @@ export default function About() {
 
                             {/* CTA Button */}
                             <div className="pt-4">
-                                <Link
-                                    href="/contact"
-                                    className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold px-10 py-5 rounded-md text-sm transition-all uppercase tracking-wide"
-                                >
-                                    BUILD YOUR BOOTH
+                                <Link href="/contact">
+                                    <motion.div
+                                        whileHover={{ backgroundColor: '#1d4ed8' }}
+                                        whileTap={{ scale: 0.98 }}
+                                        className="inline-block bg-blue-600 text-white font-bold px-10 py-5 rounded-md text-sm uppercase tracking-wide"
+                                    >
+                                        BUILD YOUR BOOTH
+                                    </motion.div>
                                 </Link>
                             </div>
-                        </div>
+                        </AnimatedItem>
                     </div>
                 </div>
-            </section>
+            </AnimatedSection>
 
             {/* Call-to-Action Banner */}
             <CTABanner

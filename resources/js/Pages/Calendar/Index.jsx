@@ -2,6 +2,7 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import { Head } from '@inertiajs/react';
 import EventCalendar from '@/Components/calendar/EventCalendar';
 import PageHeader from '@/Components/PageHeader';
+import AnimatedSection from '@/Components/AnimatedSection';
 
 export default function Index({
     initialMonth,
@@ -20,7 +21,7 @@ export default function Index({
                 description="Discover and explore upcoming events across Saudi Arabia and Egypt. Filter by industry, country, or keyword to find what matters to you."
             />
 
-            <div className="py-20 bg-slate-50">
+            <AnimatedSection className="py-20 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <EventCalendar
                         initialMonth={initialMonth}
@@ -31,7 +32,7 @@ export default function Index({
                         showJumpMonths={ui?.showJumpMonths ?? true}
                     />
                 </div>
-            </div>
+            </AnimatedSection>
         </PublicLayout>
     );
 }
