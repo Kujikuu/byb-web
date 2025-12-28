@@ -199,7 +199,7 @@ export default function Welcome() {
                         <h4 className="text-xs font-black text-blue-600 uppercase tracking-[0.3em]">How It Works</h4>
                         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 tracking-tighter">Our Working Process</h2>
                         <p className="text-slate-500 font-medium text-sm leading-relaxed px-4 sm:px-10">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            From initial consultation to final delivery, we guide you through every step of creating an exceptional exhibition booth that stands out and engages your audience.
                         </p>
                     </AnimatedItem>
 
@@ -210,22 +210,22 @@ export default function Welcome() {
                         <AnimatedItem>
                             <ProcessStep
                                 number="01"
-                                title="Submit A Request"
-                                description="Lorem ipsum dolor sit amet, consecto adipiscin elit, sed eiusmod tempor incididunt labore et dolore magna aliqua minim"
+                                title="Request Your Booth"
+                                description="Submit your booth request with your exhibition details, location, and requirements. Tell us about your brand, target audience, and what you want to achieve at the event."
                             />
                         </AnimatedItem>
                         <AnimatedItem>
                             <ProcessStep
                                 number="02"
-                                title="We call you back"
-                                description="Lorem ipsum dolor sit amet, consecto adipiscin elit, sed eiusmod tempor incididunt labore et dolore magna aliqua minim"
+                                title="Design & Planning"
+                                description="Our expert designers create a custom booth design tailored to your brand. We handle everything from concept to detailed planning, ensuring your booth attracts attention."
                             />
                         </AnimatedItem>
                         <AnimatedItem>
                             <ProcessStep
                                 number="03"
-                                title="Building your booth"
-                                description="Lorem ipsum dolor sit amet, consecto adipiscin elit, sed eiusmod tempor incididunt labore et dolore magna aliqua minim"
+                                title="Build & Delivery"
+                                description="We build your booth using premium materials and cutting-edge technology. With our fast-track service, your booth is ready and delivered within 3 days of approval."
                             />
                         </AnimatedItem>
                     </div>
@@ -260,22 +260,16 @@ function ServiceCard({ icon: Icon, title, description, highlighted = false }) {
 
 function ProcessStep({ number, title, description }) {
     return (
-        <motion.div
-            className="relative z-10"
-            whileHover={{ scale: 1.05 }}
-        >
-            <motion.div
-                className="text-8xl font-black text-slate-100 mb-[-3rem] select-none"
-                whileHover={{ color: 'rgba(239, 246, 255, 0.5)' }}
-            >
+        <div className="relative z-10">
+            <div className="text-8xl font-black text-slate-100 mb-[-3rem] select-none">
                 {number}
-            </motion.div>
+            </div>
             <div className="space-y-4">
                 <h3 className="text-xl font-bold text-slate-900 tracking-tight">{title}</h3>
                 <p className="text-slate-500 text-xs font-medium leading-relaxed max-w-[16rem] mx-auto">
                     {description}
                 </p>
             </div>
-        </motion.div>
+        </div>
     );
 }
