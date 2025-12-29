@@ -230,7 +230,7 @@ export default function EventDetailCard({ event, onClose }) {
     return (
         <AnimatePresence>
             <motion.div
-                className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 px-2 py-6 sm:px-4"
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-2 py-6 sm:px-4"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}

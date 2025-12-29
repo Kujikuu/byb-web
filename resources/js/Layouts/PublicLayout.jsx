@@ -26,8 +26,7 @@ export default function PublicLayout({ children }) {
     return (
         <div className="min-h-screen bg-white font-sans text-slate-900">
             {/* Navigation */}
-            {/* Navigation */}
-            <nav className="relative top-0 z-50 bg-[#f6f4ef]">
+            <nav className="top-0 z-40 sticky bg-[#f6f4ef]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-24">
                         <div className="flex items-center gap-8">
