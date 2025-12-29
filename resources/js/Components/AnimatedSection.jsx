@@ -19,7 +19,7 @@ const createContainerVariants = (staggerDelay) => ({
 });
 
 const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30 },
     visible: {
         opacity: 1,
         y: 0,
@@ -27,11 +27,11 @@ const itemVariants = {
     }
 };
 
-export default function AnimatedSection({ 
-    children, 
+export default function AnimatedSection({
+    children,
     className = "",
     as = "section",
-    staggerDelay = 0.1 
+    staggerDelay = 0.25
 }) {
     const MotionComponent = motion[as] || motion.section;
     const containerVariants = createContainerVariants(staggerDelay);

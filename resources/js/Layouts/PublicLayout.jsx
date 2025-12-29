@@ -1,27 +1,106 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { MapPin, Phone, EnvelopeSimple, WhatsappLogo, List, X, CaretUp } from 'phosphor-react';
 import { useEffect } from 'react';
 import PageTransition from '@/Components/PageTransition';
 import LanguageSwitcher from '@/Components/LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 
+// Import Lenis hook to access smooth scroll functionality
+// useLenis: Hook that provides access to the Lenis instance
+// This allows us to use Lenis's smooth scroll methods instead of native browser scrolling
+import { useLenis } from 'lenis/react';
+
+/**
+ * PublicLayout Component
+ * 
+ * Main layout component for public-facing pages.
+ * Includes navigation, footer, and scroll-to-top functionality.
+ * 
+ * Features:
+ * - Responsive navigation with mobile menu
+ * - Smooth scroll to top button (using Lenis)
+ * - Language switcher
+ * - Footer with contact information
+ */
 export default function PublicLayout({ children }) {
     const { t } = useTranslation();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setShowScrollTop(window.scrollY > 400);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    /**
+     * Performance Optimization: Use ref to track previous state
+     * 
+     * Why use useRef here?
+     * - Prevents unnecessary re-renders by only updating state when value actually changes
+     * - The callback runs on every scroll frame (60fps), so we want to minimize state updates
+     * - Only call setState when the visibility state actually needs to change
+     */
+    const prevShowScrollTop = useRef(false);
 
+    /**
+     * Get Lenis instance using the useLenis hook
+     * 
+     * Why use useLenis?
+     * - Provides access to Lenis's smooth scroll methods
+     * - Allows programmatic control of scroll position
+     * - Works seamlessly with the LenisProvider in app.jsx
+     * 
+     * Performance Note:
+     * - This callback runs on every scroll frame (~60fps during scrolling)
+     * - We use useRef to track previous state and only update when value changes
+     * - This prevents unnecessary re-renders and improves performance
+     * 
+     * The callback function receives scroll data on every scroll event
+     * We can use this to track scroll position for UI updates (like showing/hiding scroll-to-top button)
+     */
+    const lenis = useLenis(({ scroll, velocity, direction }) => {
+        /**
+         * This callback runs on every scroll event
+         * 
+         * Parameters:
+         * - scroll: Current scroll position in pixels
+         * - velocity: Current scroll velocity
+         * - direction: Scroll direction (1 = down, -1 = up)
+         * 
+         * Performance Optimization:
+         * - Calculate the new state value
+         * - Only call setState if the value actually changed
+         * - This prevents unnecessary re-renders (important since this runs ~60fps)
+         */
+        const shouldShow = scroll > 400;
+        
+        // Only update state if the value actually changed
+        // This prevents unnecessary re-renders during scrolling
+        if (shouldShow !== prevShowScrollTop.current) {
+            prevShowScrollTop.current = shouldShow;
+            setShowScrollTop(shouldShow);
+        }
+    });
+
+    /**
+     * Scroll to Top Function
+     * 
+     * Smoothly scrolls the page back to the top using Lenis.
+     * 
+     * Why use Lenis instead of window.scrollTo?
+     * - Lenis provides smoother, more performant scrolling
+     * - Consistent with the smooth scroll behavior throughout the app
+     * - Better integration with Framer Motion animations
+     * - More control over scroll animation (duration, easing, etc.)
+     * 
+     * Options:
+     * - immediate: false - Use smooth scroll animation (not instant)
+     * - duration: 1.2 - Animation duration (uses Lenis default)
+     */
     const scrollToTop = () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (lenis) {
+            // Use Lenis's scrollTo method for smooth scrolling
+            lenis.scrollTo(0, {
+                immediate: false, // Smooth scroll animation
+            });
+        }
     };
     return (
         <div className="min-h-screen bg-white font-sans text-slate-900">

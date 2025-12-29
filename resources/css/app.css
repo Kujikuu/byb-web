@@ -1,3 +1,12 @@
+/**
+ * Main Application Stylesheet
+ * 
+ * This file contains global styles, Tailwind directives, and custom CSS.
+ * 
+ * Note: Lenis CSS is imported in app.jsx via 'lenis/dist/lenis.css'
+ * This ensures proper smooth scroll behavior and height calculations.
+ */
+
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
