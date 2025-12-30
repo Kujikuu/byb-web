@@ -7,7 +7,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Base URL for the byb-db events API. This should include the /api prefix
-    | but not the trailing slash, e.g.:
+    | but NOT /v1 (it will be added automatically). No trailing slash, e.g.:
     |
     |   https://byb-db.test/api
     |   http://localhost:8000/api
@@ -47,5 +47,17 @@ return [
     |
     */
     'show_jump_months' => env('EVENT_SHOW_JUMP_MONTHS', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | API Authentication
+    |--------------------------------------------------------------------------
+    |
+    | Credentials for authenticating with the byb-db API.
+    | These should be stored securely in .env file.
+    |
+    */
+    'api_email' => env('EVENT_API_EMAIL'),
+    'api_password' => env('EVENT_API_PASSWORD'),
 ];
 

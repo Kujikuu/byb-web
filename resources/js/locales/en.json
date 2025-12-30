@@ -106,6 +106,8 @@
     "description": "Discover and explore upcoming events across Saudi Arabia and Egypt. Filter by industry, country, or keyword to find what matters to you.",
     "searchPlaceholder": "Search events by title, industry, tag...",
     "searchAndFilters": "Search & filters",
+    "errorTitle": "Error Loading Events",
+    "errorLoadingEvents": "Failed to load events. Please try again.",
     "months": {
       "january": "JANUARY",
       "february": "FEBRUARY",
@@ -120,6 +122,11 @@
       "november": "NOVEMBER",
       "december": "DECEMBER"
     }
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong",
+    "errorLoadingData": "We encountered an error while loading the data. Please try again.",
+    "tryAgain": "Try Again"
   },
   "about": {
     "title": "About Us - Build Your Booth",

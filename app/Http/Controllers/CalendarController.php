@@ -46,7 +46,7 @@ class CalendarController extends Controller
             'start_date' => $startDate,
             'end_date' => $endDate,
             'include' => 'eventStatus,eventType,industry,country,organizer,venue,tags',
-            'per_page' => 200,
+            'per_page' => 100, // Max allowed by API validation
         ]);
 
         $eventsPayload = $client->fetchEvents($apiParams, $locale);
@@ -57,7 +57,7 @@ class CalendarController extends Controller
             'start_date' => $startDate,
             'end_date' => $endDate,
             'include' => 'eventStatus,eventType,industry,country,organizer,venue,tags',
-            'per_page' => 200,
+            'per_page' => 100, // Max allowed by API validation
         ];
 
         $optionsPayload = $client->fetchEvents($optionsParams, $locale);
@@ -127,4 +127,3 @@ class CalendarController extends Controller
         ]);
     }
 }
-

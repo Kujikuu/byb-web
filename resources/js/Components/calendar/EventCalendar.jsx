@@ -5,6 +5,8 @@ import { MapPin, MagnifyingGlass } from 'phosphor-react';
 import CalendarHeader from './CalendarHeader';
 import FilterBar from './FilterBar';
 import EventDetailCard from './EventDetailCard';
+import ErrorState from '@/Components/ErrorState';
+import LoadingState from '@/Components/LoadingState';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/Contexts/LanguageContext';
 
@@ -95,7 +97,7 @@ function buildMonthGrid(month, year, events) {
 export default function EventCalendar({
     initialMonth,
     initialYear,
-    events,
+    events = [],
     filters,
     initialSearch = '',
     showJumpMonths = true,
@@ -106,6 +108,7 @@ export default function EventCalendar({
     const [hoveredEventId, setHoveredEventId] = useState(null);
     const [search, setSearch] = useState(initialSearch ?? '');
     const [isFirstRender, setIsFirstRender] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Keep local search state in sync if the server sends a new value
     useEffect(() => {
@@ -154,9 +157,12 @@ export default function EventCalendar({
         return () => clearTimeout(handle);
     }, [search, isFirstRender]);
 
+    // Ensure events is an array
+    const safeEvents = Array.isArray(events) ? events : [];
+
     const grid = useMemo(
-        () => buildMonthGrid(initialMonth, initialYear, events),
-        [initialMonth, initialYear, events],
+        () => buildMonthGrid(initialMonth, initialYear, safeEvents),
+        [initialMonth, initialYear, safeEvents],
     );
 
     const todayKey = new Date().toISOString().slice(0, 10);
@@ -242,7 +248,7 @@ export default function EventCalendar({
     const renderListView = () => {
         // De-duplicate events by ID and only show them once
         const uniqueEventsMap = new Map();
-        events.forEach((event) => {
+        safeEvents.forEach((event) => {
             if (!event || !event.startDateTime) return;
             if (!uniqueEventsMap.has(event.id)) {
                 uniqueEventsMap.set(event.id, event);
