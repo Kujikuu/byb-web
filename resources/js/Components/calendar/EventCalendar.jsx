@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { router } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { MapPin, MagnifyingGlass } from 'phosphor-react';
+import { MapPin, MagnifyingGlass, CalendarBlank } from 'phosphor-react';
 import CalendarHeader from './CalendarHeader';
 import FilterBar from './FilterBar';
 import EventDetailCard from './EventDetailCard';
 import ErrorState from '@/Components/ErrorState';
 import LoadingState from '@/Components/LoadingState';
+import EmptyState from '@/Components/EmptyState';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/Contexts/LanguageContext';
 
@@ -277,9 +278,11 @@ export default function EventCalendar({
 
         if (!listEvents.length) {
             return (
-                <div className="p-6 text-sm text-brand-muted">
-                    {t('common.noEventsForMonth')}
-                </div>
+                <EmptyState
+                    icon={CalendarBlank}
+                    title={t('common.noEventsFound')}
+                    message={t('common.noEventsForMonth')}
+                />
             );
         }
 

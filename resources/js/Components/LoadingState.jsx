@@ -15,7 +15,7 @@ export default function LoadingState({ message, size = 'md' }) {
                 weight="bold"
             />
             {message && (
-                <p className="mt-4 text-gray-600 text-sm">{message}</p>
+                <p className="mt-4 text-slate-500 text-sm">{message}</p>
             )}
         </div>
     );

@@ -35,6 +35,8 @@
     "of": "of",
     "noEventsFound": "No events found",
     "noEventsForMonth": "No events found for this month.",
+    "noDataFound": "No data found",
+    "noResults": "No results found",
     "more": "more",
     "currentMonth": "Current Month",
     "today": "Today",
@@ -88,6 +90,7 @@
     "portfolioViewAll": "View All",
     "portfolioIndustry": "Industry",
     "portfolioDate": "Date",
+    "noPortfolios": "No portfolios available",
     "statisticsTitle": "Our Statistics",
     "statisticsSubtitle": "Numbers That Speak",
     "stat1Number": "500+",
@@ -126,7 +129,10 @@
   "errors": {
     "somethingWentWrong": "Something went wrong",
     "errorLoadingData": "We encountered an error while loading the data. Please try again.",
-    "tryAgain": "Try Again"
+    "tryAgain": "Try Again",
+    "unexpectedError": "We encountered an unexpected error. Please try refreshing the page.",
+    "errorDetails": "Error Details (Development Only)",
+    "goHome": "Go Home"
   },
   "about": {
     "title": "About Us - Build Your Booth",

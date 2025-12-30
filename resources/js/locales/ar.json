@@ -35,6 +35,8 @@
     "of": "من",
     "noEventsFound": "لم يتم العثور على أحداث",
     "noEventsForMonth": "لم يتم العثور على أحداث لهذا الشهر.",
+    "noDataFound": "لم يتم العثور على بيانات",
+    "noResults": "لم يتم العثور على نتائج",
     "more": "المزيد",
     "currentMonth": "الشهر الحالي",
     "today": "اليوم",
@@ -88,6 +90,7 @@
     "portfolioViewAll": "عرض الكل",
     "portfolioIndustry": "الصناعة",
     "portfolioDate": "التاريخ",
+    "noPortfolios": "لا توجد أعمال متاحة",
     "statisticsTitle": "إحصائياتنا",
     "statisticsSubtitle": "أرقام تتحدث عن نفسها",
     "stat1Number": "500+",
@@ -126,7 +129,10 @@
   "errors": {
     "somethingWentWrong": "حدث خطأ ما",
     "errorLoadingData": "واجهنا خطأ أثناء تحميل البيانات. يرجى المحاولة مرة أخرى.",
-    "tryAgain": "حاول مرة أخرى"
+    "tryAgain": "حاول مرة أخرى",
+    "unexpectedError": "واجهنا خطأ غير متوقع. يرجى محاولة تحديث الصفحة.",
+    "errorDetails": "تفاصيل الخطأ (للتطوير فقط)",
+    "goHome": "العودة للرئيسية"
   },
   "about": {
     "title": "من نحن - بناء كشكك",

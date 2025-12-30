@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
+import { FolderOpen } from 'phosphor-react';
 import AnimatedSection, { AnimatedItem } from '@/Components/AnimatedSection';
 import PortfolioCard from './PortfolioCard';
+import EmptyState from '@/Components/EmptyState';
 
 export default function PortfolioSection({ portfolios = [] }) {
     const { t } = useTranslation();
@@ -30,9 +32,11 @@ export default function PortfolioSection({ portfolios = [] }) {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-12">
-                        <p className="text-slate-500 text-sm">{t('welcome.noPortfolios') || 'No portfolios available'}</p>
-                    </div>
+                    <EmptyState
+                        icon={FolderOpen}
+                        title={t('welcome.noPortfolios', 'No portfolios available')}
+                        message=""
+                    />
                 )}
             </div>
         </AnimatedSection>
