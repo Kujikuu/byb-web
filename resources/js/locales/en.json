@@ -168,6 +168,7 @@
     "sendMessage": "Send us a message",
     "fullName": "Full Name",
     "emailAddress": "Email Address",
+    "country": "Country",
     "subject": "Subject",
     "message": "Message",
     "sendMessageButton": "Send Message",
@@ -183,8 +184,26 @@
     "projectInquiry": "Project Inquiry",
     "tellUsAboutProject": "Tell us about your project...",
     "placeholders": {
-      "fullName": "John Doe",
-      "email": "john@example.com"
+      "fullName": "Your name",
+      "email": "Your email",
+      "country": "Select Country"
+    },
+    "countries": {
+      "saudiArabia": "Saudi Arabia",
+      "uae": "United Arab Emirates",
+      "egypt": "Egypt",
+      "jordan": "Jordan",
+      "lebanon": "Lebanon",
+      "kuwait": "Kuwait",
+      "qatar": "Qatar",
+      "bahrain": "Bahrain",
+      "oman": "Oman",
+      "iraq": "Iraq",
+      "syria": "Syria",
+      "yemen": "Yemen",
+      "palestine": "Palestine",
+      "iran": "Iran",
+      "turkey": "Turkey"
     }
   },
   "services": {

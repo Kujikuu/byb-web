@@ -168,6 +168,7 @@
     "sendMessage": "أرسل لنا رسالة",
     "fullName": "الاسم الكامل",
     "emailAddress": "عنوان البريد الإلكتروني",
+    "country": "البلد",
     "subject": "الموضوع",
     "message": "الرسالة",
     "sendMessageButton": "إرسال الرسالة",
@@ -183,8 +184,26 @@
     "projectInquiry": "استفسار المشروع",
     "tellUsAboutProject": "أخبرنا عن مشروعك...",
     "placeholders": {
-      "fullName": "أحمد محمد",
-      "email": "ahmed@example.com"
+      "fullName": "اسمك",
+      "email": "بريدك الإلكتروني",
+      "country": "اختر البلد"
+    },
+    "countries": {
+      "saudiArabia": "المملكة العربية السعودية",
+      "uae": "الإمارات العربية المتحدة",
+      "egypt": "مصر",
+      "jordan": "الأردن",
+      "lebanon": "لبنان",
+      "kuwait": "الكويت",
+      "qatar": "قطر",
+      "bahrain": "البحرين",
+      "oman": "عمان",
+      "iraq": "العراق",
+      "syria": "سوريا",
+      "yemen": "اليمن",
+      "palestine": "فلسطين",
+      "iran": "إيران",
+      "turkey": "تركيا"
     }
   },
   "services": {
