@@ -13,7 +13,7 @@ return [
     |   http://localhost:8000/api
     |
     */
-    'api_base_url' => env('EVENT_API_BASE_URL', 'http://localhost:8000/api'),
+    'api_base_url' => env('EVENT_API_BASE_URL', 'https://byb-db.test/api'),
 
     /*
     |--------------------------------------------------------------------------

@@ -38,7 +38,12 @@ class EventApiClient
     */
     public function fetchEvents(array $params = [], ?string $locale = null): array
     {
-        $response = $this->client($locale)->get('/events', $params);
+        // Get baseUrl to check if it already includes /v1
+        $baseUrl = rtrim(Config::get('events.api_base_url'), '/');
+        // If baseUrl ends with /v1, use 'events', otherwise use 'v1/events'
+        $endpoint = str_ends_with($baseUrl, '/v1') ? 'events' : 'v1/events';
+        
+        $response = $this->client($locale)->get($endpoint, $params);
 
         if ($response->failed()) {
             return [
@@ -82,8 +87,13 @@ class EventApiClient
 
         $results = [];
 
+        // Check if baseUrl already includes /v1
+        $baseUrl = rtrim(Config::get('events.api_base_url'), '/');
+        $v1Prefix = str_ends_with($baseUrl, '/v1') ? '' : 'v1';
+        
         foreach ($endpoints as $key => $endpoint) {
-            $response = $client->get($endpoint);
+            $fullEndpoint = $v1Prefix ? ($v1Prefix . ltrim($endpoint, '/')) : ltrim($endpoint, '/');
+            $response = $client->get($fullEndpoint);
 
             if ($response->ok()) {
                 $json = $response->json();
@@ -235,8 +245,8 @@ class EventApiClient
     }
 
     /**
-    * Determine whether an event should be treated as all-day.
-    */
+     * Determine whether an event should be treated as all-day.
+     */
     protected function isAllDay(?string $start, ?string $end): bool
     {
         if (! $start || ! $end) {
@@ -245,6 +255,81 @@ class EventApiClient
 
         // Simple heuristic: if both times are midnight, treat as all-day
         return str_ends_with($start, 'T00:00:00Z') && str_ends_with($end, 'T23:59:59Z');
+    }
+
+    /**
+     * Fetch portfolios from the byb-db API.
+     *
+     * @param  array<string, mixed>  $params
+     * @param  string|null  $locale
+     * @return array<int, array<string, mixed>>
+     */
+    public function fetchPortfolios(array $params = [], ?string $locale = null): array
+    {
+        // Get baseUrl to check if it already includes /v1
+        $baseUrl = rtrim(Config::get('events.api_base_url'), '/');
+        // If baseUrl ends with /v1, use 'portfolios', otherwise use 'v1/portfolios'
+        $endpoint = str_ends_with($baseUrl, '/v1') ? 'portfolios' : 'v1/portfolios';
+        
+        $response = $this->client($locale)->get($endpoint, $params);
+
+        if ($response->failed()) {
+            \Log::warning('Portfolio API request failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+            ]);
+            return [];
+        }
+
+        $json = $response->json();
+
+        // Laravel resource collections wrap data in a "data" key
+        // Check if response has 'data' key (from ResourceCollection)
+        if (isset($json['data']) && is_array($json['data'])) {
+            $rawPortfolios = $json['data'];
+        } elseif (is_array($json) && ! isset($json['data'])) {
+            // If response is already an array of portfolios (shouldn't happen with ResourceCollection)
+            $rawPortfolios = $json;
+        } else {
+            \Log::warning('Portfolio API returned invalid data format', [
+                'json_keys' => is_array($json) ? array_keys($json) : 'not_array',
+                'json' => $json,
+            ]);
+            return [];
+        }
+
+        if (! is_array($rawPortfolios) || empty($rawPortfolios)) {
+            return [];
+        }
+
+        // Normalize portfolio images to absolute URLs
+        $assetBase = rtrim(Config::get('events.asset_base_url'), '/');
+
+        return array_map(function (array $portfolio) use ($assetBase): array {
+            // Normalize image URL - add /storage/ prefix for Filament uploaded files
+            if (! empty($portfolio['image']) && ! Str::startsWith($portfolio['image'], ['http://', 'https://'])) {
+                // If path doesn't start with storage/, add it (Filament stores in storage/app/public)
+                if (! Str::startsWith($portfolio['image'], 'storage/')) {
+                    $portfolio['image'] = 'storage/' . ltrim($portfolio['image'], '/');
+                }
+                $portfolio['image'] = $this->normalizeAssetUrl($portfolio['image'], $assetBase);
+            }
+
+            // Normalize industry image if present
+            if (isset($portfolio['industry']['image']) && ! empty($portfolio['industry']['image'])) {
+                if (! Str::startsWith($portfolio['industry']['image'], ['http://', 'https://'])) {
+                    if (! Str::startsWith($portfolio['industry']['image'], 'storage/')) {
+                        $portfolio['industry']['image'] = 'storage/' . ltrim($portfolio['industry']['image'], '/');
+                    }
+                    $portfolio['industry']['image'] = $this->normalizeAssetUrl(
+                        (string) $portfolio['industry']['image'],
+                        $assetBase
+                    );
+                }
+            }
+
+            return $portfolio;
+        }, $rawPortfolios);
     }
 }
 
