@@ -132,7 +132,9 @@
     "tryAgain": "Try Again",
     "unexpectedError": "We encountered an unexpected error. Please try refreshing the page.",
     "errorDetails": "Error Details (Development Only)",
-    "goHome": "Go Home"
+    "goHome": "Go Home",
+    "notFound": "Page Not Found",
+    "notFoundDescription": "The page you're looking for doesn't exist or has been moved."
   },
   "about": {
     "title": "About Us - Build Your Booth",
