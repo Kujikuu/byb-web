@@ -96,18 +96,24 @@ class EventApiClient
     }
 
     /**
-     * Fetch events from the byb-db API with retry logic.
+     * Fetch events from the byb-db API with retry logic and caching.
      *
      * @param  array<string, mixed>  $params
      * @return array<string, mixed>
      */
     public function fetchEvents(array $params = [], ?string $locale = null, int $maxRetries = 3): array
     {
-        // Always use 'v1/events' as baseUrl is normalized in client() method
-        $endpoint = 'v1/events';
+        // Build cache key from params and locale
+        $cacheKey = $this->getEventsCacheKey($params, $locale);
+        $cacheDuration = 900; // 15 minutes
 
-        $attempt = 0;
-        $lastException = null;
+        // Try to get from cache first
+        return Cache::remember($cacheKey, $cacheDuration, function () use ($params, $locale, $maxRetries) {
+            // Always use 'v1/events' as baseUrl is normalized in client() method
+            $endpoint = 'v1/events';
+
+            $attempt = 0;
+            $lastException = null;
 
         while ($attempt < $maxRetries) {
             try {
@@ -186,21 +192,37 @@ class EventApiClient
             }
         }
 
-        // All retries exhausted
-        Log::error('Event API request failed completely', [
-            'endpoint' => $endpoint,
-            'attempts' => $attempt,
-            'exception' => $lastException?->getMessage(),
-        ]);
+            // All retries exhausted
+            Log::error('Event API request failed completely', [
+                'endpoint' => $endpoint,
+                'attempts' => $attempt,
+                'exception' => $lastException?->getMessage(),
+            ]);
 
-        return [
-            'events' => [],
-            'meta' => [
-                'error' => true,
-                'message' => 'Network error: Unable to connect to the events API. Please check your connection and try again.',
-                'status' => 0,
-            ],
-        ];
+            return [
+                'events' => [],
+                'meta' => [
+                    'error' => true,
+                    'message' => 'Network error: Unable to connect to the events API. Please check your connection and try again.',
+                    'status' => 0,
+                ],
+            ];
+        });
+    }
+
+    /**
+     * Get cache key for events API request.
+     *
+     * @param  array<string, mixed>  $params
+     */
+    protected function getEventsCacheKey(array $params, ?string $locale): string
+    {
+        // Sort params for consistent cache keys
+        ksort($params);
+        $paramsHash = md5(json_encode($params));
+        $localeKey = $locale ?? 'default';
+
+        return "event_api_client:events:{$localeKey}:{$paramsHash}";
     }
 
     /**
@@ -390,18 +412,24 @@ class EventApiClient
     }
 
     /**
-     * Fetch portfolios from the byb-db API with retry logic.
+     * Fetch portfolios from the byb-db API with retry logic and caching.
      *
      * @param  array<string, mixed>  $params
      * @return array<int, array<string, mixed>>
      */
     public function fetchPortfolios(array $params = [], ?string $locale = null, int $maxRetries = 3): array
     {
-        // Always use 'v1/portfolios' as baseUrl is normalized in client() method
-        $endpoint = 'v1/portfolios';
+        // Build cache key from params and locale
+        $cacheKey = $this->getPortfoliosCacheKey($params, $locale);
+        $cacheDuration = 900; // 15 minutes
 
-        $attempt = 0;
-        $lastException = null;
+        // Try to get from cache first
+        return Cache::remember($cacheKey, $cacheDuration, function () use ($params, $locale, $maxRetries) {
+            // Always use 'v1/portfolios' as baseUrl is normalized in client() method
+            $endpoint = 'v1/portfolios';
+
+            $attempt = 0;
+            $lastException = null;
 
         while ($attempt < $maxRetries) {
             try {
@@ -527,13 +555,29 @@ class EventApiClient
             }
         }
 
-        // All retries exhausted
-        Log::error('Portfolio API request failed completely', [
-            'endpoint' => $endpoint,
-            'attempts' => $attempt,
-            'exception' => $lastException?->getMessage(),
-        ]);
+            // All retries exhausted
+            Log::error('Portfolio API request failed completely', [
+                'endpoint' => $endpoint,
+                'attempts' => $attempt,
+                'exception' => $lastException?->getMessage(),
+            ]);
 
-        return [];
+            return [];
+        });
+    }
+
+    /**
+     * Get cache key for portfolios API request.
+     *
+     * @param  array<string, mixed>  $params
+     */
+    protected function getPortfoliosCacheKey(array $params, ?string $locale): string
+    {
+        // Sort params for consistent cache keys
+        ksort($params);
+        $paramsHash = md5(json_encode($params));
+        $localeKey = $locale ?? 'default';
+
+        return "event_api_client:portfolios:{$localeKey}:{$paramsHash}";
     }
 }

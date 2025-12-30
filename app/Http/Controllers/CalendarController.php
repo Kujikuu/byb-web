@@ -41,7 +41,7 @@ class CalendarController extends Controller
             'search',
         ]);
 
-        // Params used for the main event list (respect current filters)
+        // Fetch events once with all filters applied
         $apiParams = array_merge($filters, [
             'start_date' => $startDate,
             'end_date' => $endDate,
@@ -50,52 +50,58 @@ class CalendarController extends Controller
         ]);
 
         $eventsPayload = $client->fetchEvents($apiParams, $locale);
+        $events = $eventsPayload['events'] ?? [];
 
-        // For filter options, we want all values for the current month,
-        // regardless of the currently active filters (except date range).
-        $optionsParams = [
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'include' => 'eventStatus,eventType,industry,country,organizer,venue,tags',
-            'per_page' => 100, // Max allowed by API validation
-        ];
+        // To build filter options, we need all events for the month (without filters)
+        // But we can optimize by reusing the same API call if no filters are active
+        $hasActiveFilters = ! empty(array_filter($filters));
 
-        $optionsPayload = $client->fetchEvents($optionsParams, $locale);
+        if ($hasActiveFilters) {
+            // If filters are active, fetch all events for filter options
+            $optionsParams = [
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'include' => 'eventStatus,eventType,industry,country,organizer,venue,tags',
+                'per_page' => 100,
+            ];
 
-        // Normalized events for the current visible month, without filters
-        $currentEvents = $optionsPayload['events'] ?? [];
+            $optionsPayload = $client->fetchEvents($optionsParams, $locale);
+            $allEventsForMonth = $optionsPayload['events'] ?? [];
+        } else {
+            // No filters active, use the same events we already fetched
+            $allEventsForMonth = $events;
+        }
 
-        // Build filter options based only on events in the current month
-        $types = collect($currentEvents)
+        // Build filter options from all events in the current month
+        $types = collect($allEventsForMonth)
             ->pluck('type')
             ->filter()
             ->unique('id')
             ->values()
             ->all();
 
-        $industries = collect($currentEvents)
+        $industries = collect($allEventsForMonth)
             ->pluck('industry')
             ->filter()
             ->unique('id')
             ->values()
             ->all();
 
-        $countries = collect($currentEvents)
+        $countries = collect($allEventsForMonth)
             ->pluck('country')
             ->filter()
             ->unique('id')
             ->values()
             ->all();
 
-        // Statuses and tags can also be limited to current month if desired
-        $statuses = collect($currentEvents)
+        $statuses = collect($allEventsForMonth)
             ->pluck('status')
             ->filter()
             ->unique('id')
             ->values()
             ->all();
 
-        $tags = collect($currentEvents)
+        $tags = collect($allEventsForMonth)
             ->pluck('tags')
             ->flatten(1)
             ->filter()
@@ -114,7 +120,7 @@ class CalendarController extends Controller
         return Inertia::render('Calendar/Index', [
             'initialMonth' => $month,
             'initialYear' => $year,
-            'events' => $eventsPayload['events'] ?? [],
+            'events' => $events,
             'filters' => [
                 'options' => $filterOptionsForCurrentMonth,
                 'active' => $filters,
