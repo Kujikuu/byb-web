@@ -306,13 +306,37 @@ class EventApiClient
         $assetBase = rtrim(Config::get('events.asset_base_url'), '/');
 
         return array_map(function (array $portfolio) use ($assetBase): array {
-            // Normalize image URL - add /storage/ prefix for Filament uploaded files
-            if (! empty($portfolio['image']) && ! Str::startsWith($portfolio['image'], ['http://', 'https://'])) {
-                // If path doesn't start with storage/, add it (Filament stores in storage/app/public)
-                if (! Str::startsWith($portfolio['image'], 'storage/')) {
-                    $portfolio['image'] = 'storage/' . ltrim($portfolio['image'], '/');
+            // Normalize images array (new format - preferred)
+            if (isset($portfolio['images']) && is_array($portfolio['images']) && ! empty($portfolio['images'])) {
+                $portfolio['images'] = array_map(function ($image) use ($assetBase) {
+                    if (is_string($image) && ! empty($image) && ! Str::startsWith($image, ['http://', 'https://'])) {
+                        // If path doesn't start with storage/, add it (Filament stores in storage/app/public)
+                        if (! Str::startsWith($image, 'storage/')) {
+                            $image = 'storage/' . ltrim($image, '/');
+                        }
+                        return $this->normalizeAssetUrl($image, $assetBase);
+                    }
+                    return $image;
+                }, array_filter($portfolio['images']));
+            } elseif (isset($portfolio['image']) && is_string($portfolio['image']) && ! empty($portfolio['image'])) {
+                // Fallback: if only single image exists, convert to array format
+                if (! Str::startsWith($portfolio['image'], ['http://', 'https://'])) {
+                    if (! Str::startsWith($portfolio['image'], 'storage/')) {
+                        $portfolio['image'] = 'storage/' . ltrim($portfolio['image'], '/');
+                    }
+                    $portfolio['image'] = $this->normalizeAssetUrl($portfolio['image'], $assetBase);
                 }
-                $portfolio['image'] = $this->normalizeAssetUrl($portfolio['image'], $assetBase);
+                // Also set images array for consistency
+                $portfolio['images'] = [$portfolio['image']];
+            } else {
+                $portfolio['images'] = [];
+            }
+
+            // Normalize single image URL for backward compatibility (first image from array)
+            if (! empty($portfolio['images']) && is_array($portfolio['images'])) {
+                $portfolio['image'] = $portfolio['images'][0];
+            } elseif (empty($portfolio['image'])) {
+                $portfolio['image'] = null;
             }
 
             // Normalize industry image if present
