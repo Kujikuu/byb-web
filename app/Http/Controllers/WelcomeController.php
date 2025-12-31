@@ -30,11 +30,11 @@ class WelcomeController extends Controller
             'include' => 'industry',
         ], $locale);
 
-        // Debug: Log for troubleshooting
-        \Log::info('WelcomeController: Portfolios fetched', [
+        // Log portfolio fetch for monitoring
+        \Log::channel('api')->info('Portfolios fetched for welcome page', [
             'count' => count($portfolios),
             'locale' => $locale,
-            'first_portfolio' => $portfolios[0] ?? null,
+            'ip' => $request->ip(),
         ]);
 
         return Inertia::render('Welcome', [

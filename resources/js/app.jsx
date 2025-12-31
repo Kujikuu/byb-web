@@ -22,6 +22,7 @@ import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { LanguageProvider } from './Contexts/LanguageContext';
+import ErrorBoundary from './Components/ErrorBoundary';
 
 // Import Lenis React components and hooks
 // ReactLenis: Wrapper component that initializes Lenis smooth scroll
@@ -41,7 +42,13 @@ import { useEffect, useRef } from 'react';
 // We'll use this to scroll to top when navigating between pages
 import { router } from '@inertiajs/react';
 
+// Import error tracking
+import { initializeErrorTracking } from './utils/errorTracker';
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+
+// Initialize browser error tracking
+initializeErrorTracking();
 
 /**
  * LenisProvider Component
@@ -193,11 +200,13 @@ createInertiaApp({
          * - App is the actual content that will be scrolled
          */
         root.render(
-            <LenisProvider>
-                <LanguageProvider>
-                    <App {...props} />
-                </LanguageProvider>
-            </LenisProvider>
+            <ErrorBoundary>
+                <LenisProvider>
+                    <LanguageProvider>
+                        <App {...props} />
+                    </LanguageProvider>
+                </LenisProvider>
+            </ErrorBoundary>
         );
     },
     progress: {

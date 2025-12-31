@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\EventApiClient;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -116,6 +117,17 @@ class CalendarController extends Controller
             'statuses' => $statuses,
             'tags' => $tags,
         ];
+
+        // Log calendar page view for monitoring
+        Log::channel('api')->info('Calendar page viewed', [
+            'month' => $month,
+            'year' => $year,
+            'locale' => $locale,
+            'event_count' => count($events),
+            'has_filters' => $hasActiveFilters,
+            'filters' => $filters,
+            'ip' => $request->ip(),
+        ]);
 
         return Inertia::render('Calendar/Index', [
             'initialMonth' => $month,

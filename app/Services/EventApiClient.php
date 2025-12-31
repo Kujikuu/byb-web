@@ -78,16 +78,18 @@ class EventApiClient
                     return $data['data']['token'] ?? $data['token'] ?? null;
                 }
 
-                Log::warning('Failed to authenticate with API', [
+                Log::channel('api')->warning('Failed to authenticate with API', [
                     'status' => $response->status(),
                     'body' => $response->body(),
+                    'endpoint' => $loginUrl,
                 ]);
 
                 return null;
             } catch (\Exception $e) {
-                Log::error('Error authenticating with API', [
+                Log::channel('api')->error('Error authenticating with API', [
                     'exception' => get_class($e),
                     'message' => $e->getMessage(),
+                    'endpoint' => $loginUrl,
                 ]);
 
                 return null;
@@ -115,85 +117,85 @@ class EventApiClient
             $attempt = 0;
             $lastException = null;
 
-        while ($attempt < $maxRetries) {
-            try {
-                $response = $this->client($locale)->get($endpoint, $params);
+            while ($attempt < $maxRetries) {
+                try {
+                    $response = $this->client($locale)->get($endpoint, $params);
 
-                if ($response->successful()) {
-                    $json = $response->json();
+                    if ($response->successful()) {
+                        $json = $response->json();
 
-                    // Laravel resource collections typically wrap data in a "data" key
-                    $rawEvents = Arr::get($json, 'data', $json);
+                        // Laravel resource collections typically wrap data in a "data" key
+                        $rawEvents = Arr::get($json, 'data', $json);
 
-                    return [
-                        'events' => $this->normalizeEvents($rawEvents),
-                        'meta' => Arr::except($json, ['data']),
-                    ];
-                }
+                        return [
+                            'events' => $this->normalizeEvents($rawEvents),
+                            'meta' => Arr::except($json, ['data']),
+                        ];
+                    }
 
-                // Don't retry on client errors (4xx)
-                if ($response->status() >= 400 && $response->status() < 500) {
-                    Log::warning('Event API client error', [
+                    // Don't retry on client errors (4xx)
+                    if ($response->status() >= 400 && $response->status() < 500) {
+                        Log::channel('api')->warning('Event API client error', [
+                            'status' => $response->status(),
+                            'endpoint' => $endpoint,
+                            'params' => $params,
+                        ]);
+
+                        return [
+                            'events' => [],
+                            'meta' => [
+                                'error' => true,
+                                'message' => $response->json('message') ?? 'Failed to load events.',
+                                'status' => $response->status(),
+                            ],
+                        ];
+                    }
+
+                    // Retry on server errors (5xx) or network errors
+                    $attempt++;
+                    if ($attempt < $maxRetries) {
+                        sleep(min($attempt, 3)); // Exponential backoff: 1s, 2s, 3s
+
+                        continue;
+                    }
+
+                    // Last attempt failed
+                    Log::channel('api')->error('Event API request failed after retries', [
                         'status' => $response->status(),
                         'endpoint' => $endpoint,
-                        'params' => $params,
+                        'attempts' => $attempt,
                     ]);
 
                     return [
                         'events' => [],
                         'meta' => [
                             'error' => true,
-                            'message' => $response->json('message') ?? 'Failed to load events.',
+                            'message' => $response->json('message') ?? 'Failed to load events after multiple attempts.',
                             'status' => $response->status(),
                         ],
                     ];
-                }
+                } catch (\Exception $e) {
+                    $lastException = $e;
+                    $attempt++;
 
-                // Retry on server errors (5xx) or network errors
-                $attempt++;
-                if ($attempt < $maxRetries) {
-                    sleep(min($attempt, 3)); // Exponential backoff: 1s, 2s, 3s
+                    // Log network errors
+                    Log::channel('api')->warning('Event API network error', [
+                        'exception' => get_class($e),
+                        'message' => $e->getMessage(),
+                        'endpoint' => $endpoint,
+                        'attempt' => $attempt,
+                    ]);
 
-                    continue;
-                }
+                    if ($attempt < $maxRetries) {
+                        sleep(min($attempt, 3)); // Exponential backoff
 
-                // Last attempt failed
-                Log::error('Event API request failed after retries', [
-                    'status' => $response->status(),
-                    'endpoint' => $endpoint,
-                    'attempts' => $attempt,
-                ]);
-
-                return [
-                    'events' => [],
-                    'meta' => [
-                        'error' => true,
-                        'message' => $response->json('message') ?? 'Failed to load events after multiple attempts.',
-                        'status' => $response->status(),
-                    ],
-                ];
-            } catch (\Exception $e) {
-                $lastException = $e;
-                $attempt++;
-
-                // Log network errors
-                Log::warning('Event API network error', [
-                    'exception' => get_class($e),
-                    'message' => $e->getMessage(),
-                    'endpoint' => $endpoint,
-                    'attempt' => $attempt,
-                ]);
-
-                if ($attempt < $maxRetries) {
-                    sleep(min($attempt, 3)); // Exponential backoff
-
-                    continue;
+                        continue;
+                    }
                 }
             }
-        }
 
             // All retries exhausted
-            Log::error('Event API request failed completely', [
+            Log::channel('api')->error('Event API request failed completely', [
                 'endpoint' => $endpoint,
                 'attempts' => $attempt,
                 'exception' => $lastException?->getMessage(),
@@ -431,132 +433,133 @@ class EventApiClient
             $attempt = 0;
             $lastException = null;
 
-        while ($attempt < $maxRetries) {
-            try {
-                $response = $this->client($locale)->get($endpoint, $params);
+            while ($attempt < $maxRetries) {
+                try {
+                    $response = $this->client($locale)->get($endpoint, $params);
 
-                if ($response->successful()) {
-                    $json = $response->json();
+                    if ($response->successful()) {
+                        $json = $response->json();
 
-                    // Laravel resource collections wrap data in a "data" key
-                    if (isset($json['data']) && is_array($json['data'])) {
-                        $rawPortfolios = $json['data'];
-                    } elseif (is_array($json) && ! isset($json['data'])) {
-                        $rawPortfolios = $json;
-                    } else {
-                        Log::warning('Portfolio API returned invalid data format', [
-                            'json_keys' => is_array($json) ? array_keys($json) : 'not_array',
+                        // Laravel resource collections wrap data in a "data" key
+                        if (isset($json['data']) && is_array($json['data'])) {
+                            $rawPortfolios = $json['data'];
+                        } elseif (is_array($json) && ! isset($json['data'])) {
+                            $rawPortfolios = $json;
+                        } else {
+                            Log::channel('api')->warning('Portfolio API returned invalid data format', [
+                                'json_keys' => is_array($json) ? array_keys($json) : 'not_array',
+                                'endpoint' => $endpoint,
+                            ]);
+
+                            return [];
+                        }
+
+                        if (! is_array($rawPortfolios) || empty($rawPortfolios)) {
+                            return [];
+                        }
+
+                        // Normalize portfolio images to absolute URLs
+                        $assetBase = rtrim(Config::get('events.asset_base_url'), '/');
+
+                        return array_map(function (array $portfolio) use ($assetBase): array {
+                            // Normalize images array (new format - preferred)
+                            if (isset($portfolio['images']) && is_array($portfolio['images']) && ! empty($portfolio['images'])) {
+                                $portfolio['images'] = array_map(function ($image) use ($assetBase) {
+                                    if (is_string($image) && ! empty($image) && ! Str::startsWith($image, ['http://', 'https://'])) {
+                                        // If path doesn't start with storage/, add it (Filament stores in storage/app/public)
+                                        if (! Str::startsWith($image, 'storage/')) {
+                                            $image = 'storage/'.ltrim($image, '/');
+                                        }
+
+                                        return $this->normalizeAssetUrl($image, $assetBase);
+                                    }
+
+                                    return $image;
+                                }, array_filter($portfolio['images']));
+                            } elseif (isset($portfolio['image']) && is_string($portfolio['image']) && ! empty($portfolio['image'])) {
+                                // Fallback: if only single image exists, convert to array format
+                                if (! Str::startsWith($portfolio['image'], ['http://', 'https://'])) {
+                                    if (! Str::startsWith($portfolio['image'], 'storage/')) {
+                                        $portfolio['image'] = 'storage/'.ltrim($portfolio['image'], '/');
+                                    }
+                                    $portfolio['image'] = $this->normalizeAssetUrl($portfolio['image'], $assetBase);
+                                }
+                                // Also set images array for consistency
+                                $portfolio['images'] = [$portfolio['image']];
+                            } else {
+                                $portfolio['images'] = [];
+                            }
+
+                            // Normalize single image URL for backward compatibility (first image from array)
+                            if (! empty($portfolio['images']) && is_array($portfolio['images'])) {
+                                $portfolio['image'] = $portfolio['images'][0];
+                            } elseif (empty($portfolio['image'])) {
+                                $portfolio['image'] = null;
+                            }
+
+                            // Normalize industry image if present
+                            if (isset($portfolio['industry']['image']) && ! empty($portfolio['industry']['image'])) {
+                                if (! Str::startsWith($portfolio['industry']['image'], ['http://', 'https://'])) {
+                                    if (! Str::startsWith($portfolio['industry']['image'], 'storage/')) {
+                                        $portfolio['industry']['image'] = 'storage/'.ltrim($portfolio['industry']['image'], '/');
+                                    }
+                                    $portfolio['industry']['image'] = $this->normalizeAssetUrl(
+                                        (string) $portfolio['industry']['image'],
+                                        $assetBase
+                                    );
+                                }
+                            }
+
+                            return $portfolio;
+                        }, $rawPortfolios);
+                    }
+
+                    // Don't retry on client errors (4xx)
+                    if ($response->status() >= 400 && $response->status() < 500) {
+                        Log::channel('api')->warning('Portfolio API client error', [
+                            'status' => $response->status(),
+                            'endpoint' => $endpoint,
                         ]);
 
                         return [];
                     }
 
-                    if (! is_array($rawPortfolios) || empty($rawPortfolios)) {
-                        return [];
+                    // Retry on server errors (5xx)
+                    $attempt++;
+                    if ($attempt < $maxRetries) {
+                        sleep(min($attempt, 3));
+
+                        continue;
                     }
 
-                    // Normalize portfolio images to absolute URLs
-                    $assetBase = rtrim(Config::get('events.asset_base_url'), '/');
-
-                    return array_map(function (array $portfolio) use ($assetBase): array {
-                        // Normalize images array (new format - preferred)
-                        if (isset($portfolio['images']) && is_array($portfolio['images']) && ! empty($portfolio['images'])) {
-                            $portfolio['images'] = array_map(function ($image) use ($assetBase) {
-                                if (is_string($image) && ! empty($image) && ! Str::startsWith($image, ['http://', 'https://'])) {
-                                    // If path doesn't start with storage/, add it (Filament stores in storage/app/public)
-                                    if (! Str::startsWith($image, 'storage/')) {
-                                        $image = 'storage/'.ltrim($image, '/');
-                                    }
-
-                                    return $this->normalizeAssetUrl($image, $assetBase);
-                                }
-
-                                return $image;
-                            }, array_filter($portfolio['images']));
-                        } elseif (isset($portfolio['image']) && is_string($portfolio['image']) && ! empty($portfolio['image'])) {
-                            // Fallback: if only single image exists, convert to array format
-                            if (! Str::startsWith($portfolio['image'], ['http://', 'https://'])) {
-                                if (! Str::startsWith($portfolio['image'], 'storage/')) {
-                                    $portfolio['image'] = 'storage/'.ltrim($portfolio['image'], '/');
-                                }
-                                $portfolio['image'] = $this->normalizeAssetUrl($portfolio['image'], $assetBase);
-                            }
-                            // Also set images array for consistency
-                            $portfolio['images'] = [$portfolio['image']];
-                        } else {
-                            $portfolio['images'] = [];
-                        }
-
-                        // Normalize single image URL for backward compatibility (first image from array)
-                        if (! empty($portfolio['images']) && is_array($portfolio['images'])) {
-                            $portfolio['image'] = $portfolio['images'][0];
-                        } elseif (empty($portfolio['image'])) {
-                            $portfolio['image'] = null;
-                        }
-
-                        // Normalize industry image if present
-                        if (isset($portfolio['industry']['image']) && ! empty($portfolio['industry']['image'])) {
-                            if (! Str::startsWith($portfolio['industry']['image'], ['http://', 'https://'])) {
-                                if (! Str::startsWith($portfolio['industry']['image'], 'storage/')) {
-                                    $portfolio['industry']['image'] = 'storage/'.ltrim($portfolio['industry']['image'], '/');
-                                }
-                                $portfolio['industry']['image'] = $this->normalizeAssetUrl(
-                                    (string) $portfolio['industry']['image'],
-                                    $assetBase
-                                );
-                            }
-                        }
-
-                        return $portfolio;
-                    }, $rawPortfolios);
-                }
-
-                // Don't retry on client errors (4xx)
-                if ($response->status() >= 400 && $response->status() < 500) {
-                    Log::warning('Portfolio API client error', [
+                    Log::channel('api')->error('Portfolio API request failed after retries', [
                         'status' => $response->status(),
                         'endpoint' => $endpoint,
+                        'attempts' => $attempt,
                     ]);
 
                     return [];
-                }
+                } catch (\Exception $e) {
+                    $lastException = $e;
+                    $attempt++;
 
-                // Retry on server errors (5xx)
-                $attempt++;
-                if ($attempt < $maxRetries) {
-                    sleep(min($attempt, 3));
+                    Log::channel('api')->warning('Portfolio API network error', [
+                        'exception' => get_class($e),
+                        'message' => $e->getMessage(),
+                        'endpoint' => $endpoint,
+                        'attempt' => $attempt,
+                    ]);
 
-                    continue;
-                }
+                    if ($attempt < $maxRetries) {
+                        sleep(min($attempt, 3));
 
-                Log::error('Portfolio API request failed after retries', [
-                    'status' => $response->status(),
-                    'endpoint' => $endpoint,
-                    'attempts' => $attempt,
-                ]);
-
-                return [];
-            } catch (\Exception $e) {
-                $lastException = $e;
-                $attempt++;
-
-                Log::warning('Portfolio API network error', [
-                    'exception' => get_class($e),
-                    'message' => $e->getMessage(),
-                    'endpoint' => $endpoint,
-                    'attempt' => $attempt,
-                ]);
-
-                if ($attempt < $maxRetries) {
-                    sleep(min($attempt, 3));
-
-                    continue;
+                        continue;
+                    }
                 }
             }
-        }
 
             // All retries exhausted
-            Log::error('Portfolio API request failed completely', [
+            Log::channel('api')->error('Portfolio API request failed completely', [
                 'endpoint' => $endpoint,
                 'attempts' => $attempt,
                 'exception' => $lastException?->getMessage(),
