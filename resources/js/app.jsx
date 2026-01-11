@@ -48,7 +48,13 @@ import { initializeErrorTracking } from './utils/errorTracker';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 // Initialize browser error tracking
-initializeErrorTracking();
+if (import.meta.env.PROD) {
+    try {
+        initializeErrorTracking();
+    } catch {
+        // Error tracking not available - continue without it
+    }
+}
 
 /**
  * LenisProvider Component

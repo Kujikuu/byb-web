@@ -60,4 +60,3 @@ return [
     'api_email' => env('EVENT_API_EMAIL'),
     'api_password' => env('EVENT_API_PASSWORD'),
 ];
-

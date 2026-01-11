@@ -34,7 +34,7 @@ class HandleInertiaRequests extends Middleware
             ?? $request->cookie('app_language')
             ?? $request->header('Accept-Language')
             ?? 'en';
-        
+
         // Normalize locale (accept 'ar' or 'en' only)
         $locale = in_array($locale, ['ar', 'en']) ? $locale : 'en';
 

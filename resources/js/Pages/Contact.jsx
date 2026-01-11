@@ -5,6 +5,7 @@ import PageHeader from '@/Components/PageHeader';
 import AnimatedSection, { AnimatedItem } from '@/Components/AnimatedSection';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { COUNTRIES } from '@/config/countries';
 
 export default function Contact() {
     const { t } = useTranslation();
@@ -52,21 +53,11 @@ export default function Contact() {
                                         className="w-full px-5 py-4 bg-slate-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-600/20 outline-none"
                                     >
                                         <option value="">{t('contact.placeholders.country')}</option>
-                                        <option value="saudiArabia">{t('contact.countries.saudiArabia')}</option>
-                                        <option value="egypt">{t('contact.countries.egypt')}</option>
-                                        <option value="uae">{t('contact.countries.uae')}</option>
-                                        <option value="jordan">{t('contact.countries.jordan')}</option>
-                                        <option value="lebanon">{t('contact.countries.lebanon')}</option>
-                                        <option value="kuwait">{t('contact.countries.kuwait')}</option>
-                                        <option value="qatar">{t('contact.countries.qatar')}</option>
-                                        <option value="bahrain">{t('contact.countries.bahrain')}</option>
-                                        <option value="oman">{t('contact.countries.oman')}</option>
-                                        <option value="iraq">{t('contact.countries.iraq')}</option>
-                                        <option value="syria">{t('contact.countries.syria')}</option>
-                                        <option value="yemen">{t('contact.countries.yemen')}</option>
-                                        <option value="palestine">{t('contact.countries.palestine')}</option>
-                                        <option value="iran">{t('contact.countries.iran')}</option>
-                                        <option value="turkey">{t('contact.countries.turkey')}</option>
+                                        {COUNTRIES.map((country) => (
+                                            <option key={country} value={country}>
+                                                {t(`contact.countries.${country}`)}
+                                            </option>
+                                        ))}
                                     </select>
                                 </div>
                                 <div className="space-y-2">

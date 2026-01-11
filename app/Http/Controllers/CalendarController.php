@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\EventApiClient;
+use App\Services\LocaleService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -11,21 +12,13 @@ use Inertia\Response;
 
 class CalendarController extends Controller
 {
-    public function index(Request $request, EventApiClient $client): Response
+    public function index(Request $request, EventApiClient $client, LocaleService $localeService): Response
     {
         $now = now();
 
         $month = (int) $request->query('month', $now->month);
         $year = (int) $request->query('year', $now->year);
-
-        // Get locale from request (query param, cookie, header, or default)
-        $locale = $request->query('locale')
-            ?? $request->cookie('app_language')
-            ?? $request->header('Accept-Language')
-            ?? 'en';
-
-        // Normalize locale (accept 'ar' or 'en' only)
-        $locale = in_array($locale, ['ar', 'en']) ? $locale : 'en';
+        $locale = $localeService->resolveFromRequest($request);
 
         $current = Carbon::createFromDate($year, $month, 1)->startOfMonth();
         $startDate = $current->copy()->startOfMonth()->toDateString();
@@ -42,23 +35,19 @@ class CalendarController extends Controller
             'search',
         ]);
 
-        // Fetch events once with all filters applied
         $apiParams = array_merge($filters, [
             'start_date' => $startDate,
             'end_date' => $endDate,
             'include' => 'eventStatus,eventType,industry,country,organizer,venue,tags',
-            'per_page' => 100, // Max allowed by API validation
+            'per_page' => 100,
         ]);
 
         $eventsPayload = $client->fetchEvents($apiParams, $locale);
         $events = $eventsPayload['events'] ?? [];
 
-        // To build filter options, we need all events for the month (without filters)
-        // But we can optimize by reusing the same API call if no filters are active
         $hasActiveFilters = ! empty(array_filter($filters));
 
         if ($hasActiveFilters) {
-            // If filters are active, fetch all events for filter options
             $optionsParams = [
                 'start_date' => $startDate,
                 'end_date' => $endDate,
@@ -69,56 +58,17 @@ class CalendarController extends Controller
             $optionsPayload = $client->fetchEvents($optionsParams, $locale);
             $allEventsForMonth = $optionsPayload['events'] ?? [];
         } else {
-            // No filters active, use the same events we already fetched
             $allEventsForMonth = $events;
         }
 
-        // Build filter options from all events in the current month
-        $types = collect($allEventsForMonth)
-            ->pluck('type')
-            ->filter()
-            ->unique('id')
-            ->values()
-            ->all();
-
-        $industries = collect($allEventsForMonth)
-            ->pluck('industry')
-            ->filter()
-            ->unique('id')
-            ->values()
-            ->all();
-
-        $countries = collect($allEventsForMonth)
-            ->pluck('country')
-            ->filter()
-            ->unique('id')
-            ->values()
-            ->all();
-
-        $statuses = collect($allEventsForMonth)
-            ->pluck('status')
-            ->filter()
-            ->unique('id')
-            ->values()
-            ->all();
-
-        $tags = collect($allEventsForMonth)
-            ->pluck('tags')
-            ->flatten(1)
-            ->filter()
-            ->unique('id')
-            ->values()
-            ->all();
-
         $filterOptionsForCurrentMonth = [
-            'types' => $types,
-            'industries' => $industries,
-            'countries' => $countries,
-            'statuses' => $statuses,
-            'tags' => $tags,
+            'types' => $this->buildFilterOptions($allEventsForMonth, 'type'),
+            'industries' => $this->buildFilterOptions($allEventsForMonth, 'industry'),
+            'countries' => $this->buildFilterOptions($allEventsForMonth, 'country'),
+            'statuses' => $this->buildFilterOptions($allEventsForMonth, 'status'),
+            'tags' => $this->buildFilterOptions($allEventsForMonth, 'tags', true),
         ];
 
-        // Log calendar page view for monitoring
         Log::channel('api')->info('Calendar page viewed', [
             'month' => $month,
             'year' => $year,
@@ -143,5 +93,26 @@ class CalendarController extends Controller
             ],
             'locale' => $locale,
         ]);
+    }
+
+    /**
+     * Build filter options from events collection.
+     *
+     * @param  array<int, array<string, mixed>>  $events
+     * @return array<int, mixed>
+     */
+    protected function buildFilterOptions(array $events, string $key, bool $flatten = false): array
+    {
+        $collection = collect($events)->pluck($key);
+
+        if ($flatten) {
+            $collection = $collection->flatten(1);
+        }
+
+        return $collection
+            ->filter()
+            ->unique('id')
+            ->values()
+            ->all();
     }
 }

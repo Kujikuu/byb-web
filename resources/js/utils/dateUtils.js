@@ -2,9 +2,16 @@
  * Date formatting utilities
  */
 
+/**
+ * Convert app language code to locale code for date formatting.
+ */
+export const getDateLocale = (language = 'en') => {
+    return language === 'ar' ? 'ar-SA' : 'en-US';
+};
+
 export const formatDate = (date, language = 'en') => {
     if (!date) return null;
-    return date.toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', {
+    return date.toLocaleDateString(getDateLocale(language), {
         weekday: 'short',
         month: 'short',
         day: 'numeric',
@@ -14,7 +21,7 @@ export const formatDate = (date, language = 'en') => {
 
 export const formatTime = (date, language = 'en') => {
     if (!date) return null;
-    return date.toLocaleTimeString(language === 'ar' ? 'ar-SA' : 'en-US', {
+    return date.toLocaleTimeString(getDateLocale(language), {
         hour: '2-digit',
         minute: '2-digit',
     });

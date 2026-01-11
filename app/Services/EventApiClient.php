@@ -12,14 +12,26 @@ use Illuminate\Support\Str;
 
 class EventApiClient
 {
+    private const CACHE_DURATION_SECONDS = 900;
+
+    private const AUTH_CACHE_SECONDS = 3600;
+
+    /**
+     * Get the normalized base URL (without /v1 suffix).
+     */
+    protected function getNormalizedBaseUrl(): string
+    {
+        $baseUrl = rtrim(Config::get('events.api_base_url'), '/');
+
+        return preg_replace('/\/v1$/', '', $baseUrl);
+    }
+
     /**
      * Get a configured HTTP client instance for the events API.
      */
     protected function client(?string $locale = null): PendingRequest
     {
-        $baseUrl = rtrim(Config::get('events.api_base_url'), '/');
-        // Remove /v1 from baseUrl if it exists, as endpoints will include it
-        $baseUrl = preg_replace('/\/v1$/', '', $baseUrl);
+        $baseUrl = $this->getNormalizedBaseUrl();
         $locale = $locale ?? Config::get('events.default_locale', 'en');
 
         $client = Http::baseUrl($baseUrl)
@@ -53,14 +65,8 @@ class EventApiClient
             return null;
         }
 
-        // Try to get token from cache (cache for 1 hour)
-        return Cache::remember('api_auth_token', 3600, function () use ($email, $password) {
-            $baseUrl = rtrim(Config::get('events.api_base_url'), '/');
-
-            // Remove /v1 from baseUrl if it exists, as we'll add it in the endpoint
-            $baseUrl = preg_replace('/\/v1$/', '', $baseUrl);
-
-            // Build full URL to avoid issues with baseUrl and POST
+        return Cache::remember('api_auth_token', self::AUTH_CACHE_SECONDS, function () use ($email, $password) {
+            $baseUrl = $this->getNormalizedBaseUrl();
             $loginUrl = $baseUrl.'/v1/auth/login';
 
             try {
@@ -105,12 +111,9 @@ class EventApiClient
      */
     public function fetchEvents(array $params = [], ?string $locale = null, int $maxRetries = 3): array
     {
-        // Build cache key from params and locale
         $cacheKey = $this->getEventsCacheKey($params, $locale);
-        $cacheDuration = 900; // 15 minutes
 
-        // Try to get from cache first
-        return Cache::remember($cacheKey, $cacheDuration, function () use ($params, $locale, $maxRetries) {
+        return Cache::remember($cacheKey, self::CACHE_DURATION_SECONDS, function () use ($params, $locale, $maxRetries) {
             // Always use 'v1/events' as baseUrl is normalized in client() method
             $endpoint = 'v1/events';
 
@@ -421,12 +424,9 @@ class EventApiClient
      */
     public function fetchPortfolios(array $params = [], ?string $locale = null, int $maxRetries = 3): array
     {
-        // Build cache key from params and locale
         $cacheKey = $this->getPortfoliosCacheKey($params, $locale);
-        $cacheDuration = 900; // 15 minutes
 
-        // Try to get from cache first
-        return Cache::remember($cacheKey, $cacheDuration, function () use ($params, $locale, $maxRetries) {
+        return Cache::remember($cacheKey, self::CACHE_DURATION_SECONDS, function () use ($params, $locale, $maxRetries) {
             // Always use 'v1/portfolios' as baseUrl is normalized in client() method
             $endpoint = 'v1/portfolios';
 
