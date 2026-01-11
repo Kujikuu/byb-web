@@ -35,6 +35,9 @@ class ErrorBoundary extends React.Component {
             const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || window.location.origin;
             const errorEndpoint = `${apiBaseUrl}/api/v1/errors`;
 
+            // Generate or retrieve request ID for correlation with backend logs
+            const requestId = crypto.randomUUID ? crypto.randomUUID() : this.generateRequestId();
+
             const errorData = {
                 message: error.message || 'Unknown error',
                 stack: error.stack || '',
@@ -42,6 +45,8 @@ class ErrorBoundary extends React.Component {
                 user_agent: navigator.userAgent,
                 error_type: error.name || 'Error',
                 timestamp: new Date().toISOString(),
+                severity: 'error',
+                request_id: requestId,
             };
 
             // Include component stack if available
@@ -49,11 +54,23 @@ class ErrorBoundary extends React.Component {
                 errorData.stack = `${error.stack}\n\nComponent Stack:\n${errorInfo.componentStack}`;
             }
 
+            // Try to get user context from page props (Inertia)
+            try {
+                const pageData = window.page?.props;
+                if (pageData?.auth?.user) {
+                    errorData.user_id = pageData.auth.user.id;
+                    errorData.user_email = pageData.auth.user.email;
+                }
+            } catch {
+                // User context not available, continue without it
+            }
+
             await fetch(errorEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
+                    'X-Request-ID': requestId,
                 },
                 body: JSON.stringify(errorData),
             });
@@ -61,6 +78,14 @@ class ErrorBoundary extends React.Component {
             // Silently fail - don't break the app if error logging fails
             console.error('Failed to log error to backend:', logError);
         }
+    };
+
+    generateRequestId = () => {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+            const r = (Math.random() * 16) | 0;
+            const v = c === 'x' ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+        });
     };
 
     resetError = () => {
