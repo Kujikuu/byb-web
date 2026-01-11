@@ -1,4 +1,8 @@
+import { useCountUp } from '@/hooks/useCountUp';
+
 export default function StatCard({ number, label, icon: Icon }) {
+    const [animatedNumber, numberRef] = useCountUp(number);
+
     return (
         <div className="text-center space-y-4">
             <div className="flex justify-center">
@@ -7,8 +11,11 @@ export default function StatCard({ number, label, icon: Icon }) {
                 </div>
             </div>
             <div className="space-y-2">
-                <div className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tighter">
-                    {number}
+                <div 
+                    ref={numberRef}
+                    className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tighter"
+                >
+                    {animatedNumber}
                 </div>
                 <p className="text-sm font-medium text-slate-500 leading-relaxed">
                     {label}
