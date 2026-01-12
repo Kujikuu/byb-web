@@ -21,7 +21,9 @@ export default function Welcome({ portfolios = [] }) {
 
             <ServicesSection />
 
-            <PortfolioSection portfolios={portfolios} />
+            {portfolios.length >= 3 && (
+                <PortfolioSection portfolios={portfolios} />
+            )}
 
             <StatisticsSection />
 
