@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(vendor/bin/pint:*)"
+      "Bash(vendor/bin/pint:*)",
+      "Bash(npm run build)"
     ]
   }
 }

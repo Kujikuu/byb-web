@@ -399,7 +399,11 @@ class EventApiClient
             return rtrim($assetBase, '/').'/'.ltrim($path, '/');
         }
 
-        // Relative path: just prefix with asset base
+        // Relative path: ensure it has storage/ prefix, then prefix with asset base
+        if (! Str::startsWith($url, 'storage/')) {
+            $url = 'storage/'.ltrim($url, '/');
+        }
+
         return rtrim($assetBase, '/').'/'.ltrim($url, '/');
     }
 
