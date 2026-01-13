@@ -29,7 +29,7 @@ class EventApiClient
     /**
      * Get a configured HTTP client instance for the events API.
      */
-    protected function client(?string $locale = null): PendingRequest
+    public function client(?string $locale = null): PendingRequest
     {
         $baseUrl = $this->getNormalizedBaseUrl();
         $locale = $locale ?? Config::get('events.default_locale', 'en');
@@ -271,7 +271,7 @@ class EventApiClient
      * @param  array<int, array<string, mixed>>  $rawEvents
      * @return array<int, array<string, mixed>>
      */
-    protected function normalizeEvents(array $rawEvents): array
+    public function normalizeEvents(array $rawEvents): array
     {
         return array_map(function (array $event): array {
             $start = $event['start_datetime'] ?? null;
@@ -382,6 +382,9 @@ class EventApiClient
                 'images' => $this->normalizeImages($event['images'] ?? [], $assetBase),
                 'isAccommodationAvailable' => $event['is_accommodation_available'] ?? false,
                 'externalLink' => $event['external_link'] ?? null,
+                // Include related/co-located events if they exist in the API response
+                'relatedEvents' => isset($event['related_events']) ? $this->normalizeAssociatedEvents($event['related_events'], $assetBase) : [],
+                'colocatedEvents' => isset($event['colocated_events']) ? $this->normalizeAssociatedEvents($event['colocated_events'], $assetBase) : [],
             ];
         }, $events);
     }

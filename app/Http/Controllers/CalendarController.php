@@ -101,6 +101,52 @@ class CalendarController extends Controller
     }
 
     /**
+     * Fetch a single event with its related and co-located events.
+     * Used when clicking on a related/co-located event to get its full data.
+     */
+    public function showEvent(Request $request, int $eventId, EventApiClient $client, LocaleService $localeService): \Illuminate\Http\JsonResponse
+    {
+        $locale = $localeService->resolveFromRequest($request);
+
+        try {
+            $apiParams = [
+                'include' => self::EVENT_INCLUDES,
+                'include_related' => true,
+            ];
+
+            // Fetch the specific event from the API
+            $response = $client->client($locale)->get("v1/events/{$eventId}", $apiParams);
+
+            if ($response->successful()) {
+                $json = $response->json();
+                $rawEvent = \Illuminate\Support\Arr::get($json, 'data', $json);
+
+                // Normalize the event using the same method as the main events list
+                $normalizedEvents = $client->normalizeEvents([$rawEvent]);
+                $event = $normalizedEvents[0] ?? null;
+
+                if ($event) {
+                    return response()->json(['event' => $event]);
+                }
+            }
+
+            return response()->json(['error' => 'Event not found'], 404);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::channel('api')->error('Error fetching event', [
+                'event_id' => $eventId,
+                'error' => $e->getMessage(),
+                'exception' => get_class($e),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'error' => 'Failed to fetch event',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Build filter options from events collection.
      *
      * @param  array<int, array<string, mixed>>  $events

@@ -9,6 +9,7 @@ use Inertia\Inertia;
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+Route::get('/calendar/event/{eventId}', [CalendarController::class, 'showEvent'])->name('calendar.event.show');
 
 Route::get('/about', function () {
     return Inertia::render('About');
