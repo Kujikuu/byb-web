@@ -12,6 +12,11 @@ use Inertia\Response;
 
 class CalendarController extends Controller
 {
+    /**
+     * API relationships to include in event responses.
+     */
+    private const EVENT_INCLUDES = 'eventStatus,eventType,industry,country,organizer,venue,tags,colocatedEvents';
+
     public function index(Request $request, EventApiClient $client, LocaleService $localeService): Response
     {
         $now = now();
@@ -38,7 +43,7 @@ class CalendarController extends Controller
         $apiParams = array_merge($filters, [
             'start_date' => $startDate,
             'end_date' => $endDate,
-            'include' => 'eventStatus,eventType,industry,country,organizer,venue,tags',
+            'include' => self::EVENT_INCLUDES,
             'per_page' => 100,
         ]);
 
@@ -51,7 +56,7 @@ class CalendarController extends Controller
             $optionsParams = [
                 'start_date' => $startDate,
                 'end_date' => $endDate,
-                'include' => 'eventStatus,eventType,industry,country,organizer,venue,tags',
+                'include' => self::EVENT_INCLUDES,
                 'per_page' => 100,
             ];
 

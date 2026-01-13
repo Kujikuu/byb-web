@@ -18,6 +18,7 @@ import { useEventData } from '@/hooks/useEventData';
 import { formatDate, formatTime } from '@/utils/dateUtils';
 import { truncate } from '@/utils/stringUtils';
 import { buildStay22Src, buildGoogleCalendarUrl, downloadIcs } from '@/utils/calendarUtils';
+import CoLocatedEventsCarousel from './CoLocatedEventsCarousel';
 
 export default function EventDetailCard({ event, onClose }) {
     const { t } = useTranslation();
@@ -466,6 +467,18 @@ export default function EventDetailCard({ event, onClose }) {
                                     </span>
                                 ))}
                             </div>
+                        )}
+
+                        {/* Co-located events carousel - manually linked events */}
+                        {event.colocatedEvents && event.colocatedEvents.length > 0 && (
+                            <CoLocatedEventsCarousel
+                                colocatedEvents={event.colocatedEvents}
+                                onSelectEvent={(colocatedEvent) => {
+                                    if (typeof event.onSelectRelated === 'function') {
+                                        event.onSelectRelated(colocatedEvent);
+                                    }
+                                }}
+                            />
                         )}
 
                         {/* Related events */}
