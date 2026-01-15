@@ -29,7 +29,7 @@ class EventApiClient
     /**
      * Get a configured HTTP client instance for the events API.
      */
-    protected function client(?string $locale = null): PendingRequest
+    public function client(?string $locale = null): PendingRequest
     {
         $baseUrl = $this->getNormalizedBaseUrl();
         $locale = $locale ?? Config::get('events.default_locale', 'en');
@@ -271,92 +271,13 @@ class EventApiClient
      * @param  array<int, array<string, mixed>>  $rawEvents
      * @return array<int, array<string, mixed>>
      */
-    protected function normalizeEvents(array $rawEvents): array
+    public function normalizeEvents(array $rawEvents): array
     {
         return array_map(function (array $event): array {
             $start = $event['start_datetime'] ?? null;
             $end = $event['end_datetime'] ?? null;
 
             $assetBase = rtrim(Config::get('events.asset_base_url'), '/');
-            $images = $event['images'] ?? [];
-
-            if (! is_array($images)) {
-                $images = [$images];
-            }
-
-            $normalizedImages = array_map(function ($image) use ($assetBase) {
-                // Already a structured image object
-                if (is_array($image)) {
-                    if (isset($image['url'])) {
-                        $image['url'] = $this->normalizeAssetUrl($image['url'], $assetBase);
-                    }
-
-                    return $image;
-                }
-
-                return $this->normalizeAssetUrl((string) $image, $assetBase);
-            }, $images);
-
-            $related = array_map(function (array $related) use ($assetBase) {
-                $relatedStart = $related['start_datetime'] ?? null;
-                $relatedEnd = $related['end_datetime'] ?? null;
-
-                $images = $related['images'] ?? [];
-                if (! is_array($images)) {
-                    $images = [$images];
-                }
-
-                $normalizedRelatedImages = array_map(function ($image) use ($assetBase) {
-                    if (is_array($image)) {
-                        if (isset($image['url'])) {
-                            $image['url'] = $this->normalizeAssetUrl($image['url'], $assetBase);
-                        }
-
-                        return $image;
-                    }
-
-                    return $this->normalizeAssetUrl((string) $image, $assetBase);
-                }, $images);
-
-                // Normalize related organizer image (if present)
-                $relatedOrganizer = $related['organizer'] ?? null;
-                if (is_array($relatedOrganizer) && ! empty($relatedOrganizer['image'])) {
-                    $relatedOrganizer['image'] = $this->normalizeAssetUrl(
-                        (string) $relatedOrganizer['image'],
-                        $assetBase
-                    );
-                }
-
-                return [
-                    'id' => $related['id'] ?? null,
-                    'title' => $related['title'] ?? '',
-                    'description' => $related['description'] ?? '',
-                    'startDateTime' => $relatedStart,
-                    'endDateTime' => $relatedEnd,
-                    'timezone' => $related['timezone'] ?? null,
-                    'allDay' => $this->isAllDay($relatedStart, $relatedEnd),
-                    'status' => $related['event_status'] ?? null,
-                    'type' => $related['event_type'] ?? null,
-                    'industry' => $related['industry'] ?? null,
-                    'country' => $related['country'] ?? null,
-                    'organizer' => $relatedOrganizer,
-                    'venue' => $related['venue'] ?? null,
-                    'tags' => $related['tags'] ?? [],
-                    'googleMapsUrl' => $related['google_maps_url'] ?? null,
-                    'images' => $normalizedRelatedImages,
-                    'isAccommodationAvailable' => $related['is_accommodation_available'] ?? false,
-                    'externalLink' => $related['external_link'] ?? null,
-                ];
-            }, $event['related_events'] ?? []);
-
-            // Normalize main organizer image (if present)
-            $organizer = $event['organizer'] ?? null;
-            if (is_array($organizer) && ! empty($organizer['image'])) {
-                $organizer['image'] = $this->normalizeAssetUrl(
-                    (string) $organizer['image'],
-                    $assetBase
-                );
-            }
 
             return [
                 'id' => $event['id'] ?? null,
@@ -370,17 +291,102 @@ class EventApiClient
                 'type' => $event['event_type'] ?? null,
                 'industry' => $event['industry'] ?? null,
                 'country' => $event['country'] ?? null,
-                'organizer' => $organizer,
+                'organizer' => $this->normalizeOrganizer($event['organizer'] ?? null, $assetBase),
                 'venue' => $event['venue'] ?? null,
                 'tags' => $event['tags'] ?? [],
                 'googleMapsUrl' => $event['google_maps_url'] ?? null,
-                'images' => $normalizedImages,
+                'images' => $this->normalizeImages($event['images'] ?? [], $assetBase),
                 'isAccommodationAvailable' => $event['is_accommodation_available'] ?? false,
                 'externalLink' => $event['external_link'] ?? null,
-                'relatedEvents' => $related,
+                'relatedEvents' => $this->normalizeAssociatedEvents($event['related_events'] ?? [], $assetBase),
+                'colocatedEvents' => $this->normalizeAssociatedEvents($event['colocated_events'] ?? [], $assetBase),
                 'industryColor' => $event['industry_color'] ?? null,
             ];
         }, $rawEvents);
+    }
+
+    /**
+     * Normalize an array of images to absolute URLs.
+     *
+     * @param  mixed  $images
+     * @return array<int, mixed>
+     */
+    protected function normalizeImages(mixed $images, string $assetBase): array
+    {
+        if (! is_array($images)) {
+            $images = [$images];
+        }
+
+        return array_map(function ($image) use ($assetBase) {
+            if (is_array($image) && isset($image['url'])) {
+                $image['url'] = $this->normalizeAssetUrl($image['url'], $assetBase);
+
+                return $image;
+            }
+
+            return $this->normalizeAssetUrl((string) $image, $assetBase);
+        }, $images);
+    }
+
+    /**
+     * Normalize organizer data with image URL processing.
+     *
+     * @param  mixed  $organizer
+     */
+    protected function normalizeOrganizer(mixed $organizer, string $assetBase): ?array
+    {
+        if (! is_array($organizer)) {
+            return null;
+        }
+
+        if (empty($organizer['image'])) {
+            return $organizer;
+        }
+
+        $organizer['image'] = $this->normalizeAssetUrl(
+            (string) $organizer['image'],
+            $assetBase
+        );
+
+        return $organizer;
+    }
+
+    /**
+     * Normalize associated events (related or colocated) with their images and organizer.
+     *
+     * @param  array<int, array<string, mixed>>  $events
+     * @return array<int, array<string, mixed>>
+     */
+    protected function normalizeAssociatedEvents(array $events, string $assetBase): array
+    {
+        return array_map(function (array $event) use ($assetBase): array {
+            $start = $event['start_datetime'] ?? null;
+            $end = $event['end_datetime'] ?? null;
+
+            return [
+                'id' => $event['id'] ?? null,
+                'title' => $event['title'] ?? '',
+                'description' => $event['description'] ?? '',
+                'startDateTime' => $start,
+                'endDateTime' => $end,
+                'timezone' => $event['timezone'] ?? null,
+                'allDay' => $this->isAllDay($start, $end),
+                'status' => $event['event_status'] ?? null,
+                'type' => $event['event_type'] ?? null,
+                'industry' => $event['industry'] ?? null,
+                'country' => $event['country'] ?? null,
+                'organizer' => $this->normalizeOrganizer($event['organizer'] ?? null, $assetBase),
+                'venue' => $event['venue'] ?? null,
+                'tags' => $event['tags'] ?? [],
+                'googleMapsUrl' => $event['google_maps_url'] ?? null,
+                'images' => $this->normalizeImages($event['images'] ?? [], $assetBase),
+                'isAccommodationAvailable' => $event['is_accommodation_available'] ?? false,
+                'externalLink' => $event['external_link'] ?? null,
+                // Include related/co-located events if they exist in the API response
+                'relatedEvents' => isset($event['related_events']) ? $this->normalizeAssociatedEvents($event['related_events'], $assetBase) : [],
+                'colocatedEvents' => isset($event['colocated_events']) ? $this->normalizeAssociatedEvents($event['colocated_events'], $assetBase) : [],
+            ];
+        }, $events);
     }
 
     /**

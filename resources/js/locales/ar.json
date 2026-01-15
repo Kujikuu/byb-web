@@ -31,6 +31,7 @@
     "time": "الوقت",
     "eventDetails": "تفاصيل الحدث",
     "relatedEvents": "أحداث ذات صلة",
+    "coLocatedEvents": "أيضاً في هذا الموقع",
     "showing": "عرض",
     "of": "من",
     "noEventsFound": "لم يتم العثور على أحداث",
