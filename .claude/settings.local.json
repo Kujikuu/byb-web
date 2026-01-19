@@ -5,7 +5,8 @@
       "Bash(npm run build)",
       "Bash(php artisan cache:clear:*)",
       "Bash(php artisan route:list:*)",
-      "Bash(php *)"
+      "Bash(php *)",
+      "Bash(grep:*)"
     ]
   }
 }

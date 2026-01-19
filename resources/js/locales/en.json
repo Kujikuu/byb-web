@@ -138,7 +138,7 @@
     "notFoundDescription": "The page you're looking for doesn't exist or has been moved."
   },
   "about": {
-    "title": "About Us - Build Your Booth",
+    "title": "About Us",
     "pageTitle": "About",
     "subtitle": "Our Story",
     "description": "Our mission is to bridge the gap between exhibitors and their success by providing a centralized, easy-to-use platform for booth discovery and management.",
@@ -162,7 +162,7 @@
     "ctaButton": "START CONSULTATION"
   },
   "contact": {
-    "title": "Contact Us - Build Your Booth",
+    "title": "Contact Us",
     "pageTitle": "Contact Us",
     "subtitle": "Get In Touch",
     "description": "Have a question or ready to build your next booth? We're here to help you stand out at your next exhibition.",
@@ -213,7 +213,7 @@
     }
   },
   "services": {
-    "title": "Our Services - Build Your Booth",
+    "title": "Our Services",
     "pageTitle": "Our Services",
     "subtitle": "Excellence Defined",
     "description": "Comprehensive event management and discovery solutions designed to make your next exhibition a success.",
